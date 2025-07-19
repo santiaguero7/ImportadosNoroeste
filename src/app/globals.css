@@ -1,26 +1,240 @@
 @import "tailwindcss";
 
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  --background: 220 15% 8%;
+  --foreground: 45 15% 95%;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --card: 220 15% 10%;
+  --card-foreground: 45 15% 95%;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --popover: 220 15% 10%;
+  --popover-foreground: 45 15% 95%;
+
+  --primary: 45 85% 45%;
+  --primary-foreground: 220 15% 8%;
+
+  --secondary: 220 15% 15%;
+  --secondary-foreground: 45 15% 90%;
+
+  --muted: 220 15% 12%;
+  --muted-foreground: 45 10% 65%;
+
+  --accent: 45 85% 45%;
+  --accent-foreground: 220 15% 8%;
+
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 220 15% 20%;
+  --input: 220 15% 15%;
+  --ring: 45 85% 45%;
+
+  --radius: 0.5rem;
+
+  --sidebar-background: 220 15% 8%;
+  --sidebar-foreground: 45 15% 90%;
+  --sidebar-primary: 45 85% 45%;
+  --sidebar-primary-foreground: 220 15% 8%;
+  --sidebar-accent: 220 15% 12%;
+  --sidebar-accent-foreground: 45 15% 90%;
+  --sidebar-border: 220 15% 20%;
+  --sidebar-ring: 45 85% 45%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: 'Inter', sans-serif;
+}
+
+.font-playfair {
+  font-family: 'Playfair Display', serif;
+}
+
+.font-serif {
+  font-family: 'Playfair Display', serif;
+}
+
+.font-sans {
+  font-family: 'Inter', sans-serif;
+}
+
+.glass {
+  background: rgba(17, 17, 19, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(245, 158, 11, 0.1);
+}
+
+.luxury-gradient {
+  background: linear-gradient(135deg, #1C1C1E 0%, #2C2C2E 50%, #1C1C1E 100%);
+}
+
+.gold-gradient {
+  background: linear-gradient(135deg, #D4AF37 0%, #F4E6A1 50%, #B8860B 100%);
+}
+
+.glass-effect {
+  backdrop-filter: blur(10px);
+  background: rgba(28, 28, 30, 0.8);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.glow {
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+}
+
+.glow:hover {
+  box-shadow: 0 0 30px rgba(245, 158, 11, 0.5);
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes slideInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+  }
+}
+
+/* Carousel transitions */
+@keyframes slideInFromRight {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-up {
+  animation: slideInUp 0.8s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.6s ease-out;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+.hero-title {
+  animation: slideInUp 1s ease-out;
+}
+
+.hero-subtitle {
+  animation: slideInUp 1s ease-out 0.2s both;
+}
+
+.hero-description {
+  animation: slideInUp 1s ease-out 0.4s both;
+}
+
+.hero-buttons {
+  animation: slideInUp 1s ease-out 0.6s both;
+}
+
+.hero-badge {
+  animation: scaleIn 0.8s ease-out 0.1s both;
+}
+
+/* Estilos básicos para el e-commerce */
+.product-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+}
+
+.product-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px hsl(var(--thunderlarra) / 0.2);
+}
+
+.btn-primary {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.btn-primary:hover {
+  background: hsl(var(--primary) / 0.9);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px hsl(var(--thunderlarra) / 0.3);
+}
+
+.navbar-luxury {
+  background: hsl(var(--background));
+  border-bottom: 1px solid hsl(var(--border));
+  padding: 1rem 0;
+  backdrop-filter: blur(10px);
+}
+
+.footer-luxury {
+  background: hsl(var(--card));
+  border-top: 1px solid hsl(var(--border));
+  padding: 2rem 0;
 }
