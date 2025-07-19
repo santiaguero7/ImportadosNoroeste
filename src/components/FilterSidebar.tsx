@@ -11,6 +11,7 @@ interface FilterSidebarProps {
     category: string
     minPrice: number
     maxPrice: number
+    search?: string
   }
   onFilterChange: (filters: any) => void
   isOpen: boolean
@@ -33,112 +34,110 @@ const FilterSidebar = ({ filters, onFilterChange, isOpen, onClose }: FilterSideb
   }
 
   const clearFilters = () => {
-    const newFilters = { category: '', minPrice: 0, maxPrice: 999999 }
+    const newFilters = { category: '', minPrice: 0, maxPrice: 999999, search: '' }
     setLocalFilters(newFilters)
     onFilterChange(newFilters)
   }
 
   return (
-    <>
-      {/* Overlay for mobile */}
-      {isOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+    <div className="p-6 h-full overflow-y-auto">
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="text-xl font-playfair font-bold text-amber-300 flex items-center gap-2">
+          <Filter className="h-5 w-5 text-amber-300" />
+          FILTROS
+        </h2>
+        <Button 
+          variant="ghost" 
+          size="icon"
           onClick={onClose}
-        />
-      )}
-      
-      {/* Sidebar */}
-      <div className={`
-        fixed lg:static inset-y-0 left-0 w-80 bg-card/95 backdrop-blur-sm border-r border-border/50 z-50 transform transition-transform duration-300
-        ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-      `}>
-        <div className="p-6 h-full overflow-y-auto">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-playfair font-bold text-foreground flex items-center gap-2">
-              <Filter className="h-5 w-5" />
-              Filtros
-            </h2>
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={onClose}
-              className="lg:hidden"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
+          className="text-amber-300 hover:bg-amber-300/10 hover:text-amber-200"
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      </div>
 
-          <div className="space-y-6">
+          <div className="space-y-8">
             {/* Category Filter */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Categoría</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
+            <div className="bg-[#090909] rounded-3xl p-6 border border-[#23232a]">
+              <h3 className="text-lg font-bold text-amber-300 mb-4 uppercase tracking-wide">Categoría</h3>
+              <div className="space-y-3">
                 <Button
                   variant={localFilters.category === '' ? 'default' : 'outline'}
-                  className="w-full justify-start"
+                  className={`w-full justify-start font-medium transition-all rounded-xl ${
+                    localFilters.category === '' 
+                      ? 'bg-amber-300 text-black hover:bg-amber-400' 
+                      : 'border-[#23232a] text-white hover:bg-amber-300/10 hover:border-amber-300 hover:text-amber-300'
+                  }`}
                   onClick={() => handleCategoryChange('')}
                 >
                   Todos
                 </Button>
                 <Button
                   variant={localFilters.category === 'mujer' ? 'default' : 'outline'}
-                  className="w-full justify-start"
+                  className={`w-full justify-start font-medium transition-all rounded-xl ${
+                    localFilters.category === 'mujer' 
+                      ? 'bg-amber-300 text-black hover:bg-amber-400' 
+                      : 'border-[#23232a] text-white hover:bg-amber-300/10 hover:border-amber-300 hover:text-amber-300'
+                  }`}
                   onClick={() => handleCategoryChange('mujer')}
                 >
                   Mujer
                 </Button>
                 <Button
                   variant={localFilters.category === 'hombre' ? 'default' : 'outline'}
-                  className="w-full justify-start"
+                  className={`w-full justify-start font-medium transition-all rounded-xl ${
+                    localFilters.category === 'hombre' 
+                      ? 'bg-amber-300 text-black hover:bg-amber-400' 
+                      : 'border-[#23232a] text-white hover:bg-amber-300/10 hover:border-amber-300 hover:text-amber-300'
+                  }`}
                   onClick={() => handleCategoryChange('hombre')}
                 >
                   Hombre
                 </Button>
                 <Button
                   variant={localFilters.category === 'unisex' ? 'default' : 'outline'}
-                  className="w-full justify-start"
+                  className={`w-full justify-start font-medium transition-all rounded-xl ${
+                    localFilters.category === 'unisex' 
+                      ? 'bg-amber-300 text-black hover:bg-amber-400' 
+                      : 'border-[#23232a] text-white hover:bg-amber-300/10 hover:border-amber-300 hover:text-amber-300'
+                  }`}
                   onClick={() => handleCategoryChange('unisex')}
                 >
                   Unisex
                 </Button>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Price Filter */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Rango de Precios</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+            <div className="bg-[#090909] rounded-3xl p-6 border border-[#23232a]">
+              <h3 className="text-lg font-bold text-amber-300 mb-4 uppercase tracking-wide">Rango de Precios</h3>
+              <div className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-sm text-muted-foreground">Precio mínimo</label>
+                  <label className="text-sm text-gray-300 font-medium">Precio mínimo</label>
                   <Input
                     type="number"
                     placeholder="0"
                     value={localFilters.minPrice}
                     onChange={(e) => handlePriceChange('minPrice', Number(e.target.value))}
-                    className="w-full"
+                    className="w-full  border-[#23232a] text-white placeholder:text-gray-500 focus:border-amber-300 focus:ring-amber-300 rounded-xl"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm text-muted-foreground">Precio máximo</label>
+                  <label className="text-sm text-gray-300 font-medium">Precio máximo</label>
                   <Input
                     type="number"
-                    placeholder="999999"
+                    placeholder="Sin límite"
                     value={localFilters.maxPrice === 999999 ? '' : localFilters.maxPrice}
                     onChange={(e) => handlePriceChange('maxPrice', Number(e.target.value) || 999999)}
-                    className="w-full"
+                    className="w-full border-[#23232a] text-white placeholder:text-gray-500 focus:border-amber-300 focus:ring-amber-300 rounded-xl"
                   />
                 </div>
                 
                 {/* Quick price filters */}
-                <div className="grid grid-cols-1 gap-2 mt-4">
+                <div className="grid grid-cols-1 gap-2 mt-6">
                   <Button
                     variant="outline"
-                    className="text-sm"
+                    className="text-sm border-[#23232a] text-white hover:bg-amber-300/10 hover:border-amber-300 hover:text-amber-300 transition-all rounded-xl"
                     onClick={() => {
                       handlePriceChange('minPrice', 0)
                       handlePriceChange('maxPrice', 50000)
@@ -148,7 +147,7 @@ const FilterSidebar = ({ filters, onFilterChange, isOpen, onClose }: FilterSideb
                   </Button>
                   <Button
                     variant="outline"
-                    className="text-sm"
+                    className="text-sm border-[#23232a] text-white hover:bg-amber-300/10 hover:border-amber-300 hover:text-amber-300 transition-all rounded-xl"
                     onClick={() => {
                       handlePriceChange('minPrice', 50000)
                       handlePriceChange('maxPrice', 100000)
@@ -158,7 +157,7 @@ const FilterSidebar = ({ filters, onFilterChange, isOpen, onClose }: FilterSideb
                   </Button>
                   <Button
                     variant="outline"
-                    className="text-sm"
+                    className="text-sm border-[#23232a] text-white hover:bg-amber-300/10 hover:border-amber-300 hover:text-amber-300 transition-all rounded-xl"
                     onClick={() => {
                       handlePriceChange('minPrice', 100000)
                       handlePriceChange('maxPrice', 999999)
@@ -167,21 +166,26 @@ const FilterSidebar = ({ filters, onFilterChange, isOpen, onClose }: FilterSideb
                     Más de $100.000
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Clear Filters */}
             <Button
               variant="outline"
               onClick={clearFilters}
-              className="w-full border-destructive/50 text-destructive hover:bg-destructive/10"
+              className="w-full border-amber-300/50 text-amber-300 hover:bg-amber-300 hover:text-black font-bold transition-all py-3 rounded-2xl mb-4"
             >
               Limpiar filtros
             </Button>
+            <Button
+              variant="default"
+              onClick={onClose}
+              className="w-full bg-amber-300 text-black font-bold transition-all py-3 rounded-2xl"
+            >
+              Aplicar filtros
+            </Button>
           </div>
         </div>
-      </div>
-    </>
   )
 }
 

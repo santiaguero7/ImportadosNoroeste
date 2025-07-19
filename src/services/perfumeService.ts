@@ -158,14 +158,15 @@ export async function uploadImage(file: File): Promise<string> {
 
   const fileExt = file.name.split('.').pop()
   const fileName = `${Date.now()}.${fileExt}`
-  const filePath = `perfumes/${fileName}`
+  const filePath = `${fileName}`
 
   const { error: uploadError } = await supabase.storage
     .from('perfumes')
     .upload(filePath, file)
 
   if (uploadError) {
-    console.error('Error uploading image:', uploadError)
+    console.error('Error uploading image:', uploadError, file);
+    alert('Error subiendo imagen: ' + JSON.stringify(uploadError));
     throw uploadError
   }
 

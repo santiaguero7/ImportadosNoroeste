@@ -1,12 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '../../components/ui/button'
+import { Input } from '../../components/ui/input'
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card'
 import { Plus, Edit, Trash2, Upload, Eye, EyeOff } from 'lucide-react'
-import { getPerfumes, createPerfume, updatePerfume, deletePerfume, uploadImage } from '@/services/perfumeService'
-import { Perfume, PerfumeInsert } from '@/lib/supabase'
+import { getPerfumes, createPerfume, updatePerfume, deletePerfume, uploadImage } from '../../services/perfumeService'
+import { Perfume, PerfumeInsert } from '../../lib/supabase'
 import Image from 'next/image'
 
 export default function AdminPage() {
@@ -19,10 +19,12 @@ export default function AdminPage() {
   const [showForm, setShowForm] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
+    brand: '',
     description: '',
     price: '',
     category: 'mujer' as 'mujer' | 'hombre' | 'unisex',
-    imageFile: null as File | null
+    imageFile: null as File | null,
+    quantity: ''
   })
 
   useEffect(() => {
@@ -41,7 +43,7 @@ export default function AdminPage() {
     }
   }
 
-  const loadPerfumes = async () => {
+  const loadPerfumes: () => Promise<void> = async () => {
     try {
       setLoading(true)
       const data = await getPerfumes()
@@ -64,17 +66,22 @@ export default function AdminPage() {
       setLoading(true)
       let imageUrl = editingPerfume?.image_url || ''
 
-      // Upload image if new file selected
+      // Subir imagen si hay archivo nuevo
       if (formData.imageFile) {
         imageUrl = await uploadImage(formData.imageFile)
       }
 
+      // Helper para null si vacío
+      const toNullIfEmpty = (val: string) => val === '' ? null : val
+
       const perfumeData: PerfumeInsert = {
         name: formData.name,
-        description: formData.description,
-        price: Number(formData.price),
-        category: formData.category,
-        image_url: imageUrl
+        brand: toNullIfEmpty(formData.brand),
+        description: toNullIfEmpty(formData.description),
+        price: formData.price === '' ? null : Number(formData.price),
+        category: toNullIfEmpty(formData.category),
+        image_url: toNullIfEmpty(imageUrl),
+        quantity: formData.quantity === '' ? null : Number(formData.quantity)
       }
 
       if (editingPerfume) {
@@ -98,10 +105,12 @@ export default function AdminPage() {
     setEditingPerfume(perfume)
     setFormData({
       name: perfume.name,
+      brand: perfume.brand || '',
       description: perfume.description,
       price: perfume.price.toString(),
       category: perfume.category,
-      imageFile: null
+      imageFile: null,
+      quantity: perfume.quantity?.toString() || ''
     })
     setShowForm(true)
   }
@@ -122,10 +131,12 @@ export default function AdminPage() {
   const resetForm = () => {
     setFormData({
       name: '',
+      brand: '',
       description: '',
       price: '',
       category: 'mujer',
-      imageFile: null
+      imageFile: null,
+      quantity: ''
     })
     setEditingPerfume(null)
     setShowForm(false)
@@ -207,155 +218,114 @@ export default function AdminPage() {
 
         {/* Form Modal */}
         {showForm && (
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle>
-                {editingPerfume ? 'Editar Perfume' : 'Agregar Nuevo Perfume'}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label htmlFor="name" className="text-sm font-medium">
-                      Nombre
-                    </label>
-                    <Input
-                      id="name"
-                      value={formData.name}
-                      onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                      placeholder="Nombre del perfume"
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="price" className="text-sm font-medium">
-                      Precio
-                    </label>
-                    <Input
-                      id="price"
-                      type="number"
-                      value={formData.price}
-                      onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
-                      placeholder="0"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label htmlFor="description" className="text-sm font-medium">
-                    Descripción
-                  </label>
-                  <textarea
-                    id="description"
-                    value={formData.description}
-                    onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                    placeholder="Descripción del perfume"
-                    className="w-full p-2 border rounded-md bg-background text-foreground"
-                    rows={3}
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label htmlFor="category" className="text-sm font-medium">
-                    Categoría
-                  </label>
-                  <select
-                    id="category"
-                    value={formData.category}
-                    onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value as any }))}
-                    className="w-full p-2 border rounded-md bg-background text-foreground"
-                  >
-                    <option value="mujer">Mujer</option>
-                    <option value="hombre">Hombre</option>
-                    <option value="unisex">Unisex</option>
-                  </select>
-                </div>
-
-                <div className="space-y-2">
-                  <label htmlFor="image" className="text-sm font-medium">
-                    Imagen
-                  </label>
-                  <Input
-                    id="image"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="file:bg-primary file:text-primary-foreground file:border-0 file:rounded-md file:px-4 file:py-2 file:mr-4"
-                  />
-                  {editingPerfume && editingPerfume.image_url && (
-                    <div className="mt-2">
-                      <Image
-                        src={editingPerfume.image_url}
-                        alt="Imagen actual"
-                        width={100}
-                        height={100}
-                        className="rounded-md object-cover"
-                      />
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+            <Card className="w-full max-w-lg mx-auto">
+              <CardHeader>
+                <CardTitle>
+                  {editingPerfume ? 'Editar Perfume' : 'Agregar Nuevo Perfume'}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label htmlFor="name" className="text-sm font-medium">Nombre</label>
+                      <Input id="name" value={formData.name} onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))} placeholder="Nombre del perfume" required />
                     </div>
-                  )}
-                </div>
-
-                <div className="flex gap-2">
-                  <Button type="submit" disabled={loading}>
-                    {loading ? 'Guardando...' : editingPerfume ? 'Actualizar' : 'Crear'}
-                  </Button>
-                  <Button type="button" variant="outline" onClick={resetForm}>
-                    Cancelar
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Perfumes List */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {perfumes.map((perfume) => (
-            <Card key={perfume.id} className="overflow-hidden">
-              <div className="relative h-48">
-                <Image
-                  src={perfume.image_url}
-                  alt={perfume.name}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <CardContent className="p-4">
-                <h3 className="font-semibold text-lg mb-2">{perfume.name}</h3>
-                <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
-                  {perfume.description}
-                </p>
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-lg font-bold text-primary">
-                    ${perfume.price.toLocaleString()}
-                  </span>
-                  <span className="text-xs bg-primary/20 text-primary px-2 py-1 rounded">
-                    {perfume.category}
-                  </span>
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => handleEdit(perfume)}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => handleDelete(perfume.id)}
-                    className="text-destructive hover:bg-destructive/10"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
+                    <div className="space-y-2">
+                      <label htmlFor="brand" className="text-sm font-medium">Marca</label>
+                      <Input id="brand" value={formData.brand} onChange={e => setFormData(prev => ({ ...prev, brand: e.target.value }))} placeholder="Marca" required />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label htmlFor="price" className="text-sm font-medium">Precio</label>
+                      <Input id="price" type="number" value={formData.price} onChange={e => setFormData(prev => ({ ...prev, price: e.target.value }))} placeholder="0" required />
+                    </div>
+                    <div className="space-y-2">
+                      <label htmlFor="quantity" className="text-sm font-medium">Cantidad</label>
+                      <Input id="quantity" type="number" value={formData.quantity} onChange={e => setFormData(prev => ({ ...prev, quantity: e.target.value }))} placeholder="0" required />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label htmlFor="description" className="text-sm font-medium">Descripción</label>
+                    <textarea id="description" value={formData.description} onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))} placeholder="Descripción del perfume" className="w-full p-2 border rounded-md bg-background text-foreground" rows={3} required />
+                  </div>
+                  <div className="space-y-2">
+                    <label htmlFor="category" className="text-sm font-medium">Categoría</label>
+                    <select id="category" value={formData.category} onChange={e => setFormData(prev => ({ ...prev, category: e.target.value as any }))} className="w-full p-2 border rounded-md bg-background text-foreground">
+                      <option value="mujer">Mujer</option>
+                      <option value="hombre">Hombre</option>
+                      <option value="unisex">Unisex</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <label htmlFor="image" className="text-sm font-medium">Imagen</label>
+                    <Input id="image" type="file" accept="image/*" onChange={handleImageChange} className="file:bg-primary file:text-primary-foreground file:border-0 file:rounded-md file:px-4 file:py-2 file:mr-4" />
+                    {editingPerfume && editingPerfume.image_url && (
+                      <div className="mt-2">
+                        <Image src={editingPerfume.image_url} alt="Imagen actual" width={100} height={100} className="rounded-md object-cover" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <Button type="submit" disabled={loading}>{loading ? 'Guardando...' : editingPerfume ? 'Actualizar' : 'Crear'}</Button>
+                    <Button type="button" variant="outline" onClick={resetForm}>Cancelar</Button>
+                  </div>
+                </form>
               </CardContent>
             </Card>
-          ))}
+          </div>
+        )}
+
+        {/* Tabla de perfumes */}
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-[#18181b] rounded-xl shadow-lg">
+            <thead>
+              <tr className="bg-[#23232a] text-amber-300">
+                <th className="py-3 px-4 text-left">Imagen</th>
+                <th className="py-3 px-4 text-left">Nombre</th>
+                <th className="py-3 px-4 text-left">Marca</th>
+                <th className="py-3 px-4 text-left">Categoría</th>
+                <th className="py-3 px-4 text-left">Precio</th>
+                <th className="py-3 px-4 text-left">Cantidad</th>
+                <th className="py-3 px-4 text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {perfumes.map((perfume) => (
+                <tr key={perfume.id} className="border-b border-[#23232a] hover:bg-[#23232a]/30 transition-all">
+                  <td className="py-2 px-4">
+                    <div className="w-16 h-16 rounded-md overflow-hidden bg-[#23232a] flex items-center justify-center">
+                      {perfume.image_url ? (
+                        <Image src={perfume.image_url} alt={perfume.name} width={64} height={64} className="object-cover w-full h-full" />
+                      ) : (
+                        <span className="text-xs text-gray-400">Sin imagen</span>
+                      )}
+                    </div>
+                  </td>
+                  <td className="py-2 px-4 font-semibold">{perfume.name}</td>
+                  <td className="py-2 px-4">{perfume.brand}</td>
+                  <td className="py-2 px-4">{perfume.category}</td>
+                  <td className="py-2 px-4">${perfume.price.toLocaleString()}</td>
+                  <td className="py-2 px-4">{perfume.quantity ?? 0}</td>
+                  <td className="py-2 px-4 text-center">
+                    <div className="flex gap-2 justify-center">
+                      <Button size="sm" variant="outline" onClick={() => handleEdit(perfume)} title="Editar">
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => handleDelete(perfume.id)} className="text-destructive hover:bg-destructive/10" title="Eliminar">
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => {/* lógica para agregar stock */}} title="Agregar stock">
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

@@ -45,10 +45,10 @@ const Navbar = ({ onSearch }: NavbarProps) => {
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex-shrink-0">
-            <Link href="/" className="flex items-center gap-2 text-xl md:text-2xl font-extrabold text-white hover:text-amber-300 transition-colors duration-300 relative group tracking-tight" style={{ fontFamily: 'Libre Bodoni, serif', textTransform: 'uppercase' }}>
-              NOROESTE IMPORTADOS
-              <span className="block absolute left-0 -bottom-1 w-full h-1.5 bg-gradient-to-r from-amber-300 via-amber-400 to-amber-300 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></span>
+          <div className="flex-shrink-0 flex items-center">
+            <Link href="/" className="relative flex items-center justify-center w-12 h-12" aria-label="Inicio">
+              <span className="absolute inset-0 rounded-full bg-amber-300/30 border-2 border-amber-300"></span>
+              <span className="relative z-10 text-xl font-bold text-amber-300 font-playfair">NI</span>
             </Link>
           </div>
 

@@ -1,7 +1,6 @@
-
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { getPerfumesFiltered } from '@/services/perfumeService'
 import { Perfume } from '@/lib/supabase'
@@ -11,7 +10,7 @@ import PromoBanner from '@/components/PromoBanner'
 import Footer from '@/components/Footer'
 import Catalog from '@/components/Catalog'
 
-export default function Home() {
+function HomeContent() {
   const [perfumes, setPerfumes] = useState<Perfume[]>([])
   const [loading, setLoading] = useState(true)
   const [showFilters, setShowFilters] = useState(false)
@@ -71,5 +70,17 @@ export default function Home() {
       <PromoBanner />
       <Footer />
     </div>
+  )
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-amber-300"></div>
+      </div>
+    }>
+      <HomeContent />
+    </Suspense>
   )
 }
