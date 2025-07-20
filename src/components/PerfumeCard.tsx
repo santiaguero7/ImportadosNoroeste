@@ -55,7 +55,7 @@ const PerfumeCard = ({ perfume, onOpenModal, onAddToCart }: PerfumeCardProps) =>
           </button>
 
           {/* Stock Badge */}
-          {perfume.quantity && perfume.quantity < 5 && (
+          {perfume.quantity && perfume.quantity <= 2 && (
             <div className="absolute top-4 left-4 px-3 py-1 bg-red-500/80 backdrop-blur-sm rounded-full text-white text-xs font-medium">
               ¡Últimas unidades!
             </div>
@@ -99,7 +99,7 @@ const PerfumeCard = ({ perfume, onOpenModal, onAddToCart }: PerfumeCardProps) =>
 
           {/* Add to Cart Button */}
           <Button 
-            className="w-full bg-gray-800 text-white font-bold hover:bg-gray-700 transition-all duration-300 transform hover:scale-105"
+            className="w-full bg-[#23232a] text-white font-bold hover:bg-gray-700 transition-all duration-300 transform hover:scale-105"
             onClick={(e) => {
               e.stopPropagation()
               onAddToCart(perfume)

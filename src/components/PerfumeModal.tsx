@@ -139,19 +139,13 @@ const PerfumeModal = ({ perfume, isOpen, onClose, onAddToCart }: PerfumeModalPro
           </div>
           <div className="flex gap-2">
             <Button
-              className="flex-1 bg-gray-800 text-white font-bold hover:bg-gray-700 transition-all duration-300 transform hover:scale-105"
+              className="flex-1 bg-[#23232a] text-white font-bold hover:bg-gray-700 transition-all duration-300 transform hover:scale-105"
               onClick={handleAddToCart}
             >
               <ShoppingCart className="h-4 w-4 mr-2" />
               Agregar al carrito
             </Button>
-            <Button
-              className="flex-1 bg-green-600 text-white font-bold hover:bg-green-700 transition-all duration-300 transform hover:scale-105"
-              onClick={handleBuy}
-            >
-              <MessageCircle className="h-4 w-4 mr-2" />
-              Comprar ahora
-            </Button>
+           
           </div>
         </div>
       </div>

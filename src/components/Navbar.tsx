@@ -43,13 +43,13 @@ const Navbar = ({ onSearch }: NavbarProps) => {
   }
 
   return (
-    <nav className={`fixed top-0 w-full z-50 bg-gradient-to-r from-gray-900/20 via-gray-800/10 to-gray-900/20 backdrop-blur-sm border-b border-amber-300/10 transition-all duration-300 ${isVisible ? 'transform translate-y-0' : 'transform -translate-y-full'}`} style={{ fontFamily: 'Libre Bodoni, serif', textTransform: 'uppercase' }}>
-      <div className="container mx-auto px-4 lg:px-8">
+    <nav className={`fixed top-0 w-full z-50 bg-gradient-to-r from-gray-900/20 via-gray-800/10 to-gray-900/20 backdrop-blur-sm border-b border-[#23232a] transition-all duration-300 ${isVisible ? 'transform translate-y-0' : 'transform -translate-y-full'}`} style={{ fontFamily: 'Libre Bodoni, serif', textTransform: 'uppercase' }}>
+      <div className="container mx-auto px-24 lg:px-32">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex-shrink-0 flex items-center">
+          <div className="flex-shrink-0 flex items-center justify-center" style={{ minWidth: '120px' }}>
             <Link href="/"
-              className="flex items-center justify-center w-12 h-12 ml-0transition-transform duration-200 hover:scale-125 active:scale-125"
+              className="flex items-center justify-center w-12 h-12 transition-transform duration-200 hover:scale-125 active:scale-125"
               aria-label="Inicio"
             >
               <span className="text-5xl font-bold text-amber-300 font-playfair">NI</span>
@@ -58,7 +58,7 @@ const Navbar = ({ onSearch }: NavbarProps) => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-12" style={{ fontFamily: 'Libre Bodoni, serif', textTransform: 'uppercase' }}>
-            <div className="flex items-center space-x-12 ml-40">
+            <div className="flex items-center space-x-12 ml-20">
               <button 
                 onClick={() => {
                   window.location.href = '/#catalog';
@@ -102,7 +102,7 @@ const Navbar = ({ onSearch }: NavbarProps) => {
           </div>
 
           {/* Action Icons */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 justify-center" style={{ minWidth: '120px' }}>
             <Button variant="ghost" size="icon" className="text-gray-300 hover:text-amber-300 hover:bg-amber-300/10 transition-all duration-300 lg:hidden border border-gray-400 hover:border-amber-300">
               <Search className="h-5 w-5" />
             </Button>

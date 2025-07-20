@@ -80,15 +80,28 @@ const Catalog: React.FC<CatalogProps> = ({
           </p>
           
           {/* Filter Button and Search Bar */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-2xl mx-auto px-4">
-            <Button
-              variant="outline"
-              onClick={() => setShowFilters(!showFilters)}
-              className="border-amber-400 text-amber-400 hover:bg-amber-400 hover:text-black font-bold text-sm sm:text-base px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105"
-            >
-              <Filter className="h-4 w-4 mr-2" />
-              Filtros
-            </Button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-3xl mx-auto px-4">
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                onClick={() => setShowFilters(!showFilters)}
+                className="border-amber-400 text-amber-400 hover:bg-amber-400 hover:text-black font-bold text-sm sm:text-base px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105"
+              >
+                <Filter className="h-4 w-4 mr-2" />
+                Filtros
+              </Button>
+              
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setCurrentPage(1)
+                  setFilters({ category: '', minPrice: 0, maxPrice: 999999, search: '', size: '' })
+                }}
+                className="border-amber-400 text-amber-400 hover:bg-amber-400 hover:text-black font-bold text-sm sm:text-base px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105"
+              >
+                Limpiar
+              </Button>
+            </div>
             
             <div className="flex-1 w-full sm:max-w-md">
               <div className="relative group">

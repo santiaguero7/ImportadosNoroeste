@@ -4,8 +4,6 @@ import { Button } from "@/components/ui/button";
 
 const HeroCarousel = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [prevSlide, setPrevSlide] = useState(0);
-  const [direction, setDirection] = useState<'left' | 'right'>('right');
 
   const slides = [
     {
@@ -28,61 +26,65 @@ const HeroCarousel = () => {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setPrevSlide(currentSlide);
-      setDirection('right');
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 8000); // Increased from 6s to 8s for smoother transitions
+    }, 10000); // Más tiempo entre transiciones
 
     return () => clearInterval(timer);
-  }, [currentSlide, slides.length]);
+  }, [slides.length]); // Removí currentSlide de dependencies
 
   const nextSlide = () => {
-    setPrevSlide(currentSlide);
-    setDirection('right');
     setCurrentSlide((prev) => (prev + 1) % slides.length);
   };
 
   const prevSlideFn = () => {
-    setPrevSlide(currentSlide);
-    setDirection('left');
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
   return (
-    <div className="relative h-screen overflow-hidden">
-      {/* Fondo negro con grid de puntos blancos y opacidad (estático) */}
+    <div className="relative h-screen overflow-hidden bg-black">
+      {/* Fondo estático con puntos - una sola vez */}
       <div
-        className="absolute inset-0 z-0"
+        className="absolute inset-0 pointer-events-none"
         style={{
           background: "#000000",
           backgroundImage: `radial-gradient(circle, rgba(255,255,255,0.2) 1.5px, transparent 1.5px)`,
           backgroundSize: "30px 30px",
-          backgroundPosition: "0 0",
           opacity: 0.6,
         }}
       />
-      {/* Overlay oscuro (estático) */}
-      <div className="absolute inset-0 bg-black/20 z-20" />
 
-      {/* Slide animado */}
-      {slides.map((slide, index) => (
-        <div
-          key={slide.id}
-          className={`absolute inset-0 transition-all duration-1000 ease-out ${
-            index === currentSlide ? "translate-x-0 opacity-100" : 
-            index < currentSlide ? "-translate-x-full opacity-0" : "translate-x-full opacity-0"
-          }`}
-        >
-          <div className="relative h-full">
+      {/* Container para slides */}
+      <div className="relative w-full h-full">
+        {slides.map((slide, index) => (
+          <div
+            key={slide.id}
+            className={`absolute inset-0 transition-transform duration-300 ease-out ${
+              index === currentSlide 
+                ? "translate-x-0" 
+                : index < currentSlide 
+                  ? "-translate-x-full" 
+                  : "translate-x-full"
+            }`}
+            style={{
+              willChange: index === currentSlide || Math.abs(index - currentSlide) === 1 ? 'transform' : 'auto'
+            }}
+          >
+            {/* Imagen de fondo si existe - optimizada */}
             {slide.image && (
-              <img
-                src={slide.image}
-                alt={slide.title}
-                className="absolute inset-0 w-full h-full object-cover opacity-20 z-0 pointer-events-none"
+              <div 
+                className="absolute inset-0 opacity-20"
+                style={{
+                  backgroundImage: `url(${slide.image})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat'
+                }}
               />
             )}
-            <div className="absolute inset-0 flex items-center justify-center text-center">
-              <div className="max-w-4xl mx-auto px-4 animate-fade-in">
+            
+            {/* Contenido principal */}
+            <div className="relative z-10 h-full flex items-center justify-center">
+              <div className="max-w-4xl mx-auto px-4 text-center">
                 <h2 className="text-amber-300 text-lg md:text-xl font-medium mb-2" style={{ fontFamily: 'Libre Bodoni, serif' }}>
                   {slide.subtitle}
                 </h2>
@@ -92,47 +94,47 @@ const HeroCarousel = () => {
                 <p className="text-lg md:text-xl text-gray-200 mb-8 max-w-2xl mx-auto" style={{ fontFamily: 'Libre Bodoni, serif' }}>
                   {slide.description}
                 </p>
-                <button
-                  className="bg-transparent border-2 border-amber-300 text-amber-300 hover:bg-amber-300 hover:text-black font-semibold px-8 py-3 text-lg rounded-lg transition-all duration-300 transform hover:scale-105 z-50 relative"
-                  style={{ minWidth: 160 }}
+                <a
+                  href="#catalog"
+                  className="inline-block bg-transparent border-2 border-amber-300 text-amber-300 hover:bg-amber-300/10 hover:text-amber-200 font-semibold px-8 py-3 text-lg rounded-lg transition-all duration-200 transform hover:scale-102 no-underline"
+                  style={{ 
+                    minWidth: 160,
+                    fontFamily: 'Libre Bodoni, serif'
+                  }}
                   onClick={(e) => {
                     e.preventDefault();
-                    e.stopPropagation();
-                    const catalogSection = document.getElementById('catalog');
-                    if (catalogSection) {
-                      catalogSection.scrollIntoView({ behavior: 'smooth' });
-                    }
+                    document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' });
                   }}
                 >
                   {slide.cta}
-                </button>
+                </a>
               </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
 
       {/* Navigation Arrows */}
       <Button
         variant="ghost"
         size="icon"
-        className="absolute left-4 top-1/2 transform -translate-y-1/2 text-amber-300 hover:bg-amber-600/20 h-12 w-12 transition-all duration-300 z-40 border border-amber-300/20 hover:border-amber-300/40"
+        className="absolute left-4 top-1/2 transform -translate-y-1/2 text-amber-300 hover:bg-amber-600/20 h-12 w-12 transition-all duration-300 z-20 border border-amber-300/20 hover:border-amber-300/40"
         onClick={prevSlideFn}
       >
         <ChevronLeft className="h-6 w-6" />
       </Button>
-      
+
       <Button
         variant="ghost"
         size="icon"
-        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-amber-300 hover:bg-amber-600/20 h-12 w-12 transition-all duration-300 z-40 border border-amber-300/20 hover:border-amber-300/40"
+        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-amber-300 hover:bg-amber-600/20 h-12 w-12 transition-all duration-300 z-20 border border-amber-300/20 hover:border-amber-300/40"
         onClick={nextSlide}
       >
         <ChevronRight className="h-6 w-6" />
       </Button>
 
       {/* Dots Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-40">
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
         {slides.map((_, index) => (
           <button
             key={index}
@@ -140,8 +142,6 @@ const HeroCarousel = () => {
               index === currentSlide ? "bg-amber-300" : "bg-white/50 hover:bg-white/70"
             }`}
             onClick={() => {
-              setPrevSlide(currentSlide);
-              setDirection('left');
               setCurrentSlide(index);
             }}
           />

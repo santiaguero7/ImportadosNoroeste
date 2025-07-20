@@ -64,12 +64,12 @@ export default function CartPage() {
 
   if (state.items.length === 0) {
     return (
-      <div className="min-h-screen bg-background p-4">
+      <div className="min-h-screen bg-[#070707] p-4">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center py-16">
             <ShoppingCart className="mx-auto h-24 w-24 text-gray-400 mb-8" />
             <h1 className="text-3xl font-bold text-white mb-4">Tu carrito está vacío</h1>
-            <p className="text-gray-400 mb-8">Agrega algunos perfumes increíbles a tu carrito</p>
+            <p className="text-gray-300 mb-8">Agrega algunos perfumes increíbles a tu carrito</p>
             <Link href="/">
               <Button className="bg-primary hover:bg-primary/90">
                 <ArrowLeft className="h-4 w-4 mr-2" />
@@ -83,14 +83,17 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4">
+    <div className="min-h-screen bg-[#070707] p-4">
       <div className="container mx-auto max-w-4xl">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-playfair font-bold text-gradient">
             🛒 Tu Carrito
           </h1>
           <Link href="/">
-            <Button variant="outline">
+            <Button
+              variant="outline"
+              className="border-[#23232a] text-white hover:bg-[#23232a] hover:text-amber-300 transition-colors duration-150 px-6 py-2 rounded-lg"
+            >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Continuar comprando
             </Button>
@@ -146,9 +149,7 @@ export default function CartPage() {
                     </div>
                     
                     <div className="text-right">
-                      <p className="font-bold text-white">
-                        ${(item.perfume.price * item.quantity).toLocaleString()}
-                      </p>
+                    
                       <Button
                         size="sm"
                         variant="ghost"
@@ -204,7 +205,7 @@ export default function CartPage() {
                 </div>
 
                 <Button 
-                  className="w-full bg-green-600 hover:bg-green-700"
+                  className="w-full bg-green-800 hover:bg-green-700"
                   onClick={handleWhatsAppOrder}
                 >
                   Comprar por WhatsApp 📱
