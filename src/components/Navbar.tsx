@@ -1,9 +1,10 @@
 'use client'
 
-import { Search, Menu, ShoppingBag, User, Heart, X } from 'lucide-react'
+import { Search, Menu, ShoppingBag, User, Heart, X, ShoppingCart } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useState, useEffect } from 'react'
+import { useCart } from '@/contexts/CartContext'
 import Link from 'next/link'
 
 interface NavbarProps {
@@ -14,6 +15,7 @@ const Navbar = ({ onSearch }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [isVisible, setIsVisible] = useState(true)
+  const { state } = useCart()
 
   useEffect(() => {
     const controlNavbar = () => {
@@ -46,38 +48,54 @@ const Navbar = ({ onSearch }: NavbarProps) => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
-            <Link href="/" className="relative flex items-center justify-center w-12 h-12" aria-label="Inicio">
-              <span className="absolute inset-0 rounded-full bg-amber-300/30 border-2 border-amber-300"></span>
-              <span className="relative z-10 text-xl font-bold text-amber-300 font-playfair">NI</span>
+            <Link href="/"
+              className="flex items-center justify-center w-12 h-12 ml-0transition-transform duration-200 hover:scale-125 active:scale-125"
+              aria-label="Inicio"
+            >
+              <span className="text-5xl font-bold text-amber-300 font-playfair">NI</span>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8" style={{ fontFamily: 'Libre Bodoni, serif', textTransform: 'uppercase' }}>
-            <Link href="/?category=perfumes" className="text-white text-sm md:text-base transition-colors duration-200 border-b border-transparent hover:border-amber-300 pb-1 font-medium mt-2">
-              Perfumes
-            </Link>
-            <Link href="/?category=marcas" className="text-white text-sm md:text-base transition-colors duration-200 border-b border-transparent hover:border-amber-300 pb-1 font-medium mt-2">
-              Marcas
-            </Link>
-            <Link href="/?category=hombre" className="text-white text-sm md:text-base transition-colors duration-200 border-b border-transparent hover:border-amber-300 pb-1 font-medium mt-2">
-              Hombre
-            </Link>
-            <Link href="/?category=mujer" className="text-white text-sm md:text-base transition-colors duration-200 border-b border-transparent hover:border-amber-300 pb-1 font-medium mt-2">
-              Mujer
-            </Link>
+          <div className="hidden md:flex items-center space-x-12" style={{ fontFamily: 'Libre Bodoni, serif', textTransform: 'uppercase' }}>
+            <div className="flex items-center space-x-12 ml-40">
+              <button 
+                onClick={() => {
+                  window.location.href = '/#catalog';
+                }}
+                className="text-white text-lg md:text-xl transition-colors duration-200 border-b border-transparent hover:border-amber-300 pb-1 font-medium mt-2 tracking-wider"
+              >
+                PERFUMES
+              </button>
+              <button 
+                onClick={() => {
+                  window.location.href = '/?category=hombre#catalog';
+                }}
+                className="text-white text-lg md:text-xl transition-colors duration-200 border-b border-transparent hover:border-amber-300 pb-1 font-medium mt-2 tracking-wider"
+              >
+                HOMBRE
+              </button>
+              <button 
+                onClick={() => {
+                  window.location.href = '/?category=mujer#catalog';
+                }}
+                className="text-white text-lg md:text-xl transition-colors duration-200 border-b border-transparent hover:border-amber-300 pb-1 font-medium mt-2 tracking-wider"
+              >
+                MUJER
+              </button>
+            </div>
           </div>
 
           {/* Search Bar */}
           <div className="hidden lg:flex items-center flex-1 max-w-xs mx-8" style={{ textTransform: 'none' }}>
-            <form onSubmit={handleSearch} className="relative w-full group">
+            <form onSubmit={handleSearch} className="relative w-full group max-w-xl ml-0">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white group-focus-within:text-amber-300 h-4 w-4 transition-colors duration-200" />
               <Input
                 type="text"
                 placeholder="BUSCAR..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-black/30 border border-gray-400 text-gray-200 placeholder-gray-400 focus:border-amber-300 focus:outline-none focus:ring-0 transition-all duration-200 rounded-lg"
+                className="pl-10 bg-black/30 border border-gray-400 text-gray-200 placeholder-gray-400 focus:border-amber-300 focus:outline-none focus:ring-0 transition-all duration-200 rounded-lg w-full"
                 style={{ boxShadow: 'none', fontFamily: 'Libre Bodoni, serif', textTransform: 'none' }}
               />
             </form>
@@ -88,20 +106,16 @@ const Navbar = ({ onSearch }: NavbarProps) => {
             <Button variant="ghost" size="icon" className="text-gray-300 hover:text-amber-300 hover:bg-amber-300/10 transition-all duration-300 lg:hidden border border-gray-400 hover:border-amber-300">
               <Search className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon" className="text-gray-300 hover:text-amber-300 hover:bg-amber-300/10 transition-all duration-300 hover:scale-110 border border-gray-400 hover:border-amber-300">
-              <Heart className="h-5 w-5" />
-            </Button>
-            <Link href="/admin">
-              <Button variant="ghost" size="icon" className="text-gray-300 hover:text-amber-300 hover:bg-amber-300/10 transition-all duration-300 hover:scale-110 border border-gray-400 hover:border-amber-300">
-                <User className="h-5 w-5" />
+            <Link href="/cart">
+              <Button variant="ghost" className="text-gray-300 hover:text-amber-300 hover:bg-amber-300/10 transition-all duration-300 hover:scale-110 relative border border-gray-400 hover:border-amber-300 px-4 py-2 h-10">
+                <ShoppingCart className="h-6 w-6" />
+                {state.items.length > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-amber-300 text-black text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold" style={{ textTransform: 'none' }}>
+                    {state.items.reduce((acc, item) => acc + item.quantity, 0)}
+                  </span>
+                )}
               </Button>
             </Link>
-            <Button variant="ghost" size="icon" className="text-gray-300 hover:text-amber-300 hover:bg-amber-300/10 transition-all duration-300 hover:scale-110 relative border border-gray-400 hover:border-amber-300">
-              <ShoppingBag className="h-5 w-5" />
-              <span className="absolute -top-2 -right-2 bg-amber-300 text-black text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold" style={{ textTransform: 'none' }}>
-                0
-              </span>
-            </Button>
             
             {/* Mobile Menu Button */}
             <Button
@@ -119,18 +133,33 @@ const Navbar = ({ onSearch }: NavbarProps) => {
         {isMenuOpen && (
           <div className="md:hidden border-t border-amber-300/10 bg-black/50 backdrop-blur-sm" style={{ fontFamily: 'Libre Bodoni, serif' }}>
             <div className="px-2 pt-2 pb-3 space-y-1">
-              <Link href="/?category=perfumes" className="block px-3 py-2 text-gray-200 hover:text-amber-300 hover:bg-amber-300/10 transition-all duration-300 rounded-lg font-medium" onClick={() => setIsMenuOpen(false)}>
-                Perfumes
-              </Link>
-              <Link href="/?category=marcas" className="block px-3 py-2 text-gray-200 hover:text-amber-300 hover:bg-amber-300/10 transition-all duration-300 rounded-lg font-medium" onClick={() => setIsMenuOpen(false)}>
-                Marcas
-              </Link>
-              <Link href="/?category=hombre" className="block px-3 py-2 text-gray-200 hover:text-amber-300 hover:bg-amber-300/10 transition-all duration-300 rounded-lg font-medium" onClick={() => setIsMenuOpen(false)}>
-                Hombre
-              </Link>
-              <Link href="/?category=mujer" className="block px-3 py-2 text-gray-200 hover:text-amber-300 hover:bg-amber-300/10 transition-all duration-300 rounded-lg font-medium" onClick={() => setIsMenuOpen(false)}>
-                Mujer
-              </Link>
+            <button 
+              onClick={() => {
+                setIsMenuOpen(false);
+                window.location.href = '/#catalog';
+              }}
+              className="block w-full text-left px-3 py-2 text-gray-200 hover:text-amber-300 hover:bg-amber-300/10 transition-all duration-300 rounded-lg font-medium"
+            >
+              Perfumes
+            </button>
+            <button 
+              onClick={() => {
+                setIsMenuOpen(false);
+                window.location.href = '/?category=hombre#catalog';
+              }}
+              className="block w-full text-left px-3 py-2 text-gray-200 hover:text-amber-300 hover:bg-amber-300/10 transition-all duration-300 rounded-lg font-medium"
+            >
+              Hombre
+            </button>
+            <button 
+              onClick={() => {
+                setIsMenuOpen(false);
+                window.location.href = '/?category=mujer#catalog';
+              }}
+              className="block w-full text-left px-3 py-2 text-gray-200 hover:text-amber-300 hover:bg-amber-300/10 transition-all duration-300 rounded-lg font-medium"
+            >
+              Mujer
+            </button>
               <div className="px-3 py-2">
                 <form onSubmit={handleSearch}>
                   <Input

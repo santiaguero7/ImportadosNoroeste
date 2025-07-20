@@ -31,6 +31,7 @@ export async function getPerfumesFiltered(filters: {
   minPrice?: number
   maxPrice?: number
   search?: string
+  size?: string
 }) {
   if (!isSupabaseConfigured) {
     return devService.getPerfumesFiltered(filters)
@@ -42,7 +43,13 @@ export async function getPerfumesFiltered(filters: {
 
   // Filtro por categoría
   if (filters.category && filters.category !== '') {
-    query = query.eq('category', filters.category)
+    if (filters.category === 'hombre') {
+      query = query.in('category', ['hombre', 'unisex'])
+    } else if (filters.category === 'mujer') {
+      query = query.in('category', ['mujer', 'unisex'])
+    } else {
+      query = query.eq('category', filters.category)
+    }
   }
 
   // Filtro por precio
@@ -51,6 +58,11 @@ export async function getPerfumesFiltered(filters: {
   }
   if (filters.maxPrice !== undefined) {
     query = query.lte('price', filters.maxPrice)
+  }
+
+  // Filtro por tamaño
+  if (filters.size && filters.size !== '') {
+    query = query.eq('size', filters.size)
   }
 
   // Filtro por búsqueda

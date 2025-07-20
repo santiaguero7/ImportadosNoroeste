@@ -1,9 +1,13 @@
 import PerfumeCard from "@/components/PerfumeCard";
+import PerfumeModal from "@/components/PerfumeModal";
 import FilterSidebar from "@/components/FilterSidebar";
+import Toast from "@/components/Toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Filter, Loader2, Search } from "lucide-react";
+import { Filter, Loader2, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { Perfume } from "@/lib/supabase";
+import { useState, useMemo } from "react";
+import { useCart } from "@/contexts/CartContext";
 
 interface CatalogProps {
   perfumes: Perfume[];
@@ -24,8 +28,47 @@ const Catalog: React.FC<CatalogProps> = ({
   handleFilterChange,
   setFilters,
 }) => {
+  const [selectedPerfume, setSelectedPerfume] = useState<Perfume | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [showToast, setShowToast] = useState(false)
+  const [toastMessage, setToastMessage] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+  const { dispatch } = useCart()
+
+  const ITEMS_PER_PAGE = 12
+
+  // Calcular perfumes para la página actual
+  const paginatedPerfumes = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+    const endIndex = startIndex + ITEMS_PER_PAGE
+    return perfumes.slice(startIndex, endIndex)
+  }, [perfumes, currentPage])
+
+  const totalPages = Math.ceil(perfumes.length / ITEMS_PER_PAGE)
+
+  // Reset página cuando cambian los filtros
+  const handleFilterChangeWithReset = (newFilters: any) => {
+    setCurrentPage(1)
+    handleFilterChange(newFilters)
+  }
+
+  const handleOpenModal = (perfume: Perfume) => {
+    setSelectedPerfume(perfume)
+    setIsModalOpen(true)
+  }
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+    setSelectedPerfume(null)
+  }
+
+  const handleAddToCart = (perfume: Perfume) => {
+    dispatch({ type: 'ADD_ITEM', perfume })
+    setToastMessage(`${perfume.name} agregado al carrito`)
+    setShowToast(true)
+  }
   return (
-    <section id="catalog" className="py-16 sm:py-20 lg:py-24 bg-[#070707] min-h-screen">
+    <section id="catalog" className="py-8 sm:py-10 lg:py-12 bg-[#070707] min-h-screen">
       <div className="container mx-auto px-4 flex flex-col items-center justify-center">
         {/* Title Section */}
         <div className="text-center mb-8 sm:mb-12">
@@ -54,7 +97,7 @@ const Catalog: React.FC<CatalogProps> = ({
                   type="text"
                   placeholder="Buscar perfumes..."
                   value={filters.search || ''}
-                  onChange={(e) => handleFilterChange({ ...filters, search: e.target.value })}
+                  onChange={(e) => handleFilterChangeWithReset({ ...filters, search: e.target.value })}
                   className="pl-10 bg-black/30 border border-gray-400 text-gray-200 placeholder-gray-400 focus:border-amber-300 focus:outline-none focus:ring-0 transition-all duration-200 rounded-xl py-3"
                   style={{ boxShadow: 'none', fontFamily: 'Libre Bodoni, serif' }}
                 />
@@ -78,7 +121,7 @@ const Catalog: React.FC<CatalogProps> = ({
             >
               <FilterSidebar
                 filters={filters}
-                onFilterChange={handleFilterChange}
+                onFilterChange={handleFilterChangeWithReset}
                 isOpen={showFilters}
                 onClose={() => setShowFilters(false)}
               />
@@ -91,20 +134,70 @@ const Catalog: React.FC<CatalogProps> = ({
           {/* Products Section - Centered */}
 
           {/* Products Section - Centered */}
-          <div className="w-full flex flex-col items-center justify-center min-h-[900px] pt-16 pb-16">
-            {/* Espacio extra arriba, sin mensaje de resultados */}
-
+          <div className="w-full flex flex-col items-center justify-start pt-4">
             {/* Products Grid */}
             {loading ? (
               <div className="flex items-center justify-center py-16 sm:py-20">
                 <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin text-amber-400" />
               </div>
-            ) : perfumes.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-7xl mx-auto px-4">
-                {perfumes.map((perfume) => (
-                  <PerfumeCard key={perfume.id} perfume={perfume} />
-                ))}
-              </div>
+            ) : paginatedPerfumes.length > 0 ? (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-6 w-full max-w-7xl mx-auto px-4">
+                  {paginatedPerfumes.map((perfume) => (
+                    <PerfumeCard 
+                      key={perfume.id} 
+                      perfume={perfume} 
+                      onOpenModal={handleOpenModal}
+                      onAddToCart={handleAddToCart}
+                    />
+                  ))}
+                </div>
+                
+                {/* Paginación */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-2 mt-8 px-4">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                      disabled={currentPage === 1}
+                      className="border-amber-400/50 text-amber-400 hover:bg-amber-400 hover:text-black disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <ChevronLeft className="h-4 w-4 mr-1" />
+                      Anterior
+                    </Button>
+                    
+                    <div className="flex gap-1">
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                        <Button
+                          key={page}
+                          variant={page === currentPage ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setCurrentPage(page)}
+                          className={
+                            page === currentPage
+                              ? "bg-amber-400 text-black hover:bg-amber-500"
+                              : "border-amber-400/50 text-amber-400 hover:bg-amber-400 hover:text-black"
+                          }
+                        >
+                          {page}
+                        </Button>
+                      ))}
+                    </div>
+                    
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                      disabled={currentPage === totalPages}
+                      className="border-amber-400/50 text-amber-400 hover:bg-amber-400 hover:text-black disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Siguiente
+                      <ChevronRight className="h-4 w-4 ml-1" />
+                    </Button>
+                  </div>
+                )}
+              </>
             ) : (
               <div className="flex items-center justify-center py-20 sm:py-32 w-full">
                 <div className="text-center max-w-lg mx-auto">
@@ -127,6 +220,21 @@ const Catalog: React.FC<CatalogProps> = ({
             )}
           </div>
         </div>
+
+        {/* Perfume Modal */}
+        <PerfumeModal
+          perfume={selectedPerfume}
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          onAddToCart={handleAddToCart}
+        />
+
+        {/* Toast Notification */}
+        <Toast
+          message={toastMessage}
+          isVisible={showToast}
+          onClose={() => setShowToast(false)}
+        />
       </div>
     </section>
   );

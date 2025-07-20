@@ -7,11 +7,26 @@ Una aplicación web moderna para la venta de perfumes importados, desarrollada c
 - **Diseño moderno y responsive** con colores y estilo de Lovable
 - **Página principal** con hero section y promociones
 - **Catálogo completo** con filtros por categoría y precio
+- **Carrito de compras** con integración WhatsApp
 - **Búsqueda en tiempo real** por nombre de perfume
-- **Integración con WhatsApp** para compras directas
-- **Panel de administración** para gestión de productos
+- **Panel de administración protegido** para gestión de productos
+- **Sistema de autenticación** separado para admin y clientes
 - **Subida de imágenes** a Supabase Storage
 - **Base de datos** con Supabase PostgreSQL
+
+## 🛡️ Acceso de Administrador
+
+**Para el dueño de la tienda:**
+
+1. **URL de acceso**: Ve a `tu-dominio.com/admin-login`
+2. **Contraseña**: La que hayas configurado en la variable `ADMIN_PASSWORD` (por defecto: `admin123`)
+3. **Panel de administración**: Una vez autenticado, accederás directamente a la tabla de perfumes
+4. **Cerrar sesión**: Usa el botón "Cerrar Sesión" en la esquina superior derecha para volver a la tienda normal
+
+**Para los clientes:**
+- Solo ven la tienda pública
+- No tienen acceso al panel de administración
+- Pueden usar el carrito y comprar por WhatsApp
 
 ## 🚀 Tecnologías
 

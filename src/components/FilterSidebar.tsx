@@ -12,6 +12,7 @@ interface FilterSidebarProps {
     minPrice: number
     maxPrice: number
     search?: string
+    size?: string
   }
   onFilterChange: (filters: any) => void
   isOpen: boolean
@@ -20,9 +21,17 @@ interface FilterSidebarProps {
 
 const FilterSidebar = ({ filters, onFilterChange, isOpen, onClose }: FilterSidebarProps) => {
   const [localFilters, setLocalFilters] = useState(filters)
+  // Para mostrar vacío en vez de 0 en el input de precio mínimo
+  const minPriceValue = localFilters.minPrice === 0 ? '' : localFilters.minPrice;
 
   const handleCategoryChange = (category: string) => {
     const newFilters = { ...localFilters, category }
+    setLocalFilters(newFilters)
+    onFilterChange(newFilters)
+  }
+
+  const handleSizeChange = (size: string) => {
+    const newFilters = { ...localFilters, size }
     setLocalFilters(newFilters)
     onFilterChange(newFilters)
   }
@@ -34,16 +43,16 @@ const FilterSidebar = ({ filters, onFilterChange, isOpen, onClose }: FilterSideb
   }
 
   const clearFilters = () => {
-    const newFilters = { category: '', minPrice: 0, maxPrice: 999999, search: '' }
+    const newFilters = { category: '', minPrice: 0, maxPrice: 999999, search: '', size: '' }
     setLocalFilters(newFilters)
     onFilterChange(newFilters)
   }
 
   return (
-    <div className="p-6 h-full overflow-y-auto">
-      <div className="flex items-center justify-between mb-8">
-        <h2 className="text-xl font-playfair font-bold text-amber-300 flex items-center gap-2">
-          <Filter className="h-5 w-5 text-amber-300" />
+    <div className="p-4 h-full max-h-[90vh] overflow-y-auto rounded-t-2xl rounded-b-2xl" style={{ background: '#070707' }}>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-lg font-playfair font-bold text-amber-300 flex items-center gap-2">
+          <Filter className="h-4 w-4 text-amber-300" />
           FILTROS
         </h2>
         <Button 
@@ -56,11 +65,11 @@ const FilterSidebar = ({ filters, onFilterChange, isOpen, onClose }: FilterSideb
         </Button>
       </div>
 
-          <div className="space-y-8">
+          <div className="space-y-6">
             {/* Category Filter */}
-            <div className="bg-[#090909] rounded-3xl p-6 border border-[#23232a]">
-              <h3 className="text-lg font-bold text-amber-300 mb-4 uppercase tracking-wide">Categoría</h3>
-              <div className="space-y-3">
+            <div className="bg-[#090909] rounded-xl p-4 border-2 border-[#23232a]">
+              <h3 className="text-md font-bold text-amber-300 mb-3 uppercase tracking-wide">Categoría</h3>
+              <div className="space-y-2">
                 <Button
                   variant={localFilters.category === '' ? 'default' : 'outline'}
                   className={`w-full justify-start font-medium transition-all rounded-xl ${
@@ -109,15 +118,15 @@ const FilterSidebar = ({ filters, onFilterChange, isOpen, onClose }: FilterSideb
             </div>
 
             {/* Price Filter */}
-            <div className="bg-[#090909] rounded-3xl p-6 border border-[#23232a]">
-              <h3 className="text-lg font-bold text-amber-300 mb-4 uppercase tracking-wide">Rango de Precios</h3>
-              <div className="space-y-4">
+            <div className="bg-[#090909] rounded-xl p-4 border-2 border-[#23232a]">
+              <h3 className="text-md font-bold text-amber-300 mb-3 uppercase tracking-wide">Rango de Precios</h3>
+              <div className="space-y-3">
                 <div className="space-y-2">
                   <label className="text-sm text-gray-300 font-medium">Precio mínimo</label>
                   <Input
                     type="number"
                     placeholder="0"
-                    value={localFilters.minPrice}
+                    value={minPriceValue}
                     onChange={(e) => handlePriceChange('minPrice', Number(e.target.value))}
                     className="w-full  border-[#23232a] text-white placeholder:text-gray-500 focus:border-amber-300 focus:ring-amber-300 rounded-xl"
                   />
@@ -169,18 +178,69 @@ const FilterSidebar = ({ filters, onFilterChange, isOpen, onClose }: FilterSideb
               </div>
             </div>
 
+            {/* Size Filter */}
+            <div className="bg-[#090909] rounded-xl p-4 border-2 border-[#23232a]">
+              <h3 className="text-md font-bold text-amber-300 mb-3 uppercase tracking-wide">Tamaño</h3>
+              <div className="space-y-2">
+                <Button
+                  variant={!localFilters.size || localFilters.size === '' ? 'default' : 'outline'}
+                  className={`w-full justify-start font-medium transition-all rounded-xl ${
+                    !localFilters.size || localFilters.size === '' 
+                      ? 'bg-amber-300 text-black hover:bg-amber-400' 
+                      : 'border-[#23232a] text-white hover:bg-amber-300/10 hover:border-amber-300 hover:text-amber-300'
+                  }`}
+                  onClick={() => handleSizeChange('')}
+                >
+                  Todos los tamaños
+                </Button>
+                <Button
+                  variant={localFilters.size === '50ml' ? 'default' : 'outline'}
+                  className={`w-full justify-start font-medium transition-all rounded-xl ${
+                    localFilters.size === '50ml' 
+                      ? 'bg-amber-300 text-black hover:bg-amber-400' 
+                      : 'border-[#23232a] text-white hover:bg-amber-300/10 hover:border-amber-300 hover:text-amber-300'
+                  }`}
+                  onClick={() => handleSizeChange('50ml')}
+                >
+                  50ml
+                </Button>
+                <Button
+                  variant={localFilters.size === '100ml' ? 'default' : 'outline'}
+                  className={`w-full justify-start font-medium transition-all rounded-xl ${
+                    localFilters.size === '100ml' 
+                      ? 'bg-amber-300 text-black hover:bg-amber-400' 
+                      : 'border-[#23232a] text-white hover:bg-amber-300/10 hover:border-amber-300 hover:text-amber-300'
+                  }`}
+                  onClick={() => handleSizeChange('100ml')}
+                >
+                  100ml
+                </Button>
+                <Button
+                  variant={localFilters.size === '150ml' ? 'default' : 'outline'}
+                  className={`w-full justify-start font-medium transition-all rounded-xl ${
+                    localFilters.size === '150ml' 
+                      ? 'bg-amber-300 text-black hover:bg-amber-400' 
+                      : 'border-[#23232a] text-white hover:bg-amber-300/10 hover:border-amber-300 hover:text-amber-300'
+                  }`}
+                  onClick={() => handleSizeChange('150ml')}
+                >
+                  150ml
+                </Button>
+              </div>
+            </div>
+
             {/* Clear Filters */}
             <Button
               variant="outline"
               onClick={clearFilters}
-              className="w-full border-amber-300/50 text-amber-300 hover:bg-amber-300 hover:text-black font-bold transition-all py-3 rounded-2xl mb-4"
+              className="w-full border-amber-300/50 text-amber-300 hover:bg-amber-300 hover:text-black font-bold transition-all py-2 rounded-xl mb-3"
             >
               Limpiar filtros
             </Button>
             <Button
               variant="default"
               onClick={onClose}
-              className="w-full bg-amber-300 text-black font-bold transition-all py-3 rounded-2xl"
+              className="w-full bg-amber-300 text-black font-bold transition-all py-2 rounded-xl mb-3"
             >
               Aplicar filtros
             </Button>

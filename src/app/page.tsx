@@ -7,6 +7,7 @@ import { Perfume } from '@/lib/supabase'
 import Navbar from '@/components/Navbar'
 import HeroCarousel from '@/components/HeroCarousel'
 import PromoBanner from '@/components/PromoBanner'
+import SpecialOrderSection from '@/components/SpecialOrderSection'
 import Footer from '@/components/Footer'
 import Catalog from '@/components/Catalog'
 
@@ -18,7 +19,8 @@ function HomeContent() {
     category: '',
     minPrice: 0,
     maxPrice: 999999,
-    search: ''
+    search: '',
+    size: ''
   })
 
   const searchParams = useSearchParams()
@@ -67,6 +69,7 @@ function HomeContent() {
         handleFilterChange={handleFilterChange}
         setFilters={setFilters}
       />
+      <SpecialOrderSection />
       <PromoBanner />
       <Footer />
     </div>

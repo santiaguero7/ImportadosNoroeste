@@ -9,27 +9,39 @@ export const supabase = createClient(supabaseUrl, supabaseKey)
 export interface Perfume {
   id: number
   name: string
+  brand: string
   description: string
   price: number
   image_url: string
   category: 'hombre' | 'mujer' | 'unisex'
+  quantity: number
+  size: string
+  essence: string
   created_at: string
   updated_at: string
 }
 
 export interface PerfumeInsert {
   name: string
+  brand: string
   description: string
   price: number
   image_url: string
   category: 'hombre' | 'mujer' | 'unisex'
+  quantity: number
+  size: string
+  essence: string
 }
 
 export interface PerfumeUpdate {
   id: number
   name?: string
+  brand?: string
   description?: string
   price?: number
   image_url?: string
   category?: 'hombre' | 'mujer' | 'unisex'
+  quantity?: number
+  size?: string
+  essence?: string
 }

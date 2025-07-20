@@ -31,7 +31,7 @@ const HeroCarousel = () => {
       setPrevSlide(currentSlide);
       setDirection('right');
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 6000);
+    }, 8000); // Increased from 6s to 8s for smoother transitions
 
     return () => clearInterval(timer);
   }, [currentSlide, slides.length]);
@@ -68,9 +68,9 @@ const HeroCarousel = () => {
       {slides.map((slide, index) => (
         <div
           key={slide.id}
-          className={`absolute inset-0 transition-transform duration-800 ease-in-out ${
-            index === currentSlide ? "translate-x-0" : 
-            index < currentSlide ? "-translate-x-full" : "translate-x-full"
+          className={`absolute inset-0 transition-all duration-1000 ease-out ${
+            index === currentSlide ? "translate-x-0 opacity-100" : 
+            index < currentSlide ? "-translate-x-full opacity-0" : "translate-x-full opacity-0"
           }`}
         >
           <div className="relative h-full">
@@ -92,17 +92,20 @@ const HeroCarousel = () => {
                 <p className="text-lg md:text-xl text-gray-200 mb-8 max-w-2xl mx-auto" style={{ fontFamily: 'Libre Bodoni, serif' }}>
                   {slide.description}
                 </p>
-                <Button
-                  size="lg"
-                  className="bg-transparent border border-amber-300 text-amber-300 hover:bg-amber-300 hover:text-black font-semibold px-8 py-3 text-lg rounded-lg transition-all duration-300"
+                <button
+                  className="bg-transparent border-2 border-amber-300 text-amber-300 hover:bg-amber-300 hover:text-black font-semibold px-8 py-3 text-lg rounded-lg transition-all duration-300 transform hover:scale-105 z-50 relative"
                   style={{ minWidth: 160 }}
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                     const catalogSection = document.getElementById('catalog');
-                    catalogSection?.scrollIntoView({ behavior: 'smooth' });
+                    if (catalogSection) {
+                      catalogSection.scrollIntoView({ behavior: 'smooth' });
+                    }
                   }}
                 >
                   {slide.cta}
-                </Button>
+                </button>
               </div>
             </div>
           </div>
