@@ -69,8 +69,8 @@ function HomeContent() {
         handleFilterChange={handleFilterChange}
         setFilters={setFilters}
       />
-      <PromoBanner />
       <SpecialOrderSection />
+      <PromoBanner />
       <Footer />
     </div>
   )

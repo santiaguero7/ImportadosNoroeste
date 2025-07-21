@@ -1,7 +1,7 @@
 import PerfumeCard from "@/components/PerfumeCard";
 import PerfumeModal from "@/components/PerfumeModal";
 import FilterSidebar from "@/components/FilterSidebar";
-import Toast from "@/components/Toast";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Filter, Loader2, Search, ChevronLeft, ChevronRight } from "lucide-react";
@@ -30,8 +30,7 @@ const Catalog: React.FC<CatalogProps> = ({
 }) => {
   const [selectedPerfume, setSelectedPerfume] = useState<Perfume | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [showToast, setShowToast] = useState(false)
-  const [toastMessage, setToastMessage] = useState('')
+
   const [currentPage, setCurrentPage] = useState(1)
   const { dispatch } = useCart()
 
@@ -64,8 +63,7 @@ const Catalog: React.FC<CatalogProps> = ({
 
   const handleAddToCart = (perfume: Perfume) => {
     dispatch({ type: 'ADD_ITEM', perfume })
-    setToastMessage(`${perfume.name} agregado al carrito`)
-    setShowToast(true)
+
   }
   return (
     <section id="catalog" className="py-8 sm:py-10 lg:py-12 bg-[#070707] min-h-screen">
@@ -242,12 +240,7 @@ const Catalog: React.FC<CatalogProps> = ({
           onAddToCart={handleAddToCart}
         />
 
-        {/* Toast Notification */}
-        <Toast
-          message={toastMessage}
-          isVisible={showToast}
-          onClose={() => setShowToast(false)}
-        />
+
       </div>
     </section>
   );
