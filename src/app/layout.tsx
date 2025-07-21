@@ -16,6 +16,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Importados Noroeste",
   description: "Tienda de perfumes importados de lujo",
+  icons: {
+    icon: "/icono.png",
+    shortcut: "/icono.png",
+    apple: "/icono.png",
+  },
 };
 
 export default function RootLayout({

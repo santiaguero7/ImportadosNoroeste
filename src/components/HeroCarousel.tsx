@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -19,7 +20,7 @@ const HeroCarousel = () => {
       title: "Perfumes de Lujo",
       subtitle: "Pedidos únicos",
       description: "Las mejores marcas internacionales al mejor precio.",
-      image: "/perfume.png.webp",
+      image: "/perfumefondo.avif",
       cta: "Explorar"
     }
   ];
@@ -27,10 +28,9 @@ const HeroCarousel = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 10000); // Más tiempo entre transiciones
-
+    }, 10000); // Transiciones más suaves y con más tiempo
     return () => clearInterval(timer);
-  }, [slides.length]); // Removí currentSlide de dependencies
+  }, [slides.length]);
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -58,40 +58,49 @@ const HeroCarousel = () => {
         {slides.map((slide, index) => (
           <div
             key={slide.id}
-            className={`absolute inset-0 transition-transform duration-300 ease-out ${
-              index === currentSlide 
-                ? "translate-x-0" 
-                : index < currentSlide 
-                  ? "-translate-x-full" 
-                  : "translate-x-full"
+            className={`absolute inset-0 transition-all duration-600 ease-in-out ${
+              index === currentSlide
+                ? "translate-x-0 opacity-100"
+                : index < currentSlide
+                  ? "-translate-x-full opacity-0"
+                  : "translate-x-full opacity-0"
             }`}
             style={{
-              willChange: index === currentSlide || Math.abs(index - currentSlide) === 1 ? 'transform' : 'auto'
+              willChange: index === currentSlide || Math.abs(index - currentSlide) === 1 ? 'transform, opacity' : 'auto',
+              transform: 'translateZ(0)', // Forzar aceleración por hardware
+              backfaceVisibility: 'hidden'
             }}
           >
-            {/* Imagen de fondo si existe - optimizada */}
+            {/* Imagen de fondo optimizada con next/image */}
             {slide.image && (
-              <div 
-                className="absolute inset-0 opacity-20"
-                style={{
-                  backgroundImage: `url(${slide.image})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  backgroundRepeat: 'no-repeat'
-                }}
-              />
+              <div className="absolute inset-0 w-full h-full opacity-20 pointer-events-none z-0" style={{ willChange: 'opacity, transform' }}>
+                <Image
+                  src={slide.image}
+                  alt={slide.title}
+                  fill
+                  priority={index === currentSlide}
+                  sizes="100vw"
+                  style={{ objectFit: 'cover', objectPosition: 'center', transition: 'opacity 0.8s', willChange: 'opacity, transform' }}
+                  draggable={false}
+                />
+              </div>
             )}
-            
             {/* Contenido principal */}
             <div className="relative z-10 h-full flex items-center justify-center">
               <div className="max-w-4xl mx-auto px-4 text-center">
-                <h2 className="text-amber-300 text-lg md:text-xl font-medium mb-2" style={{ fontFamily: 'Libre Bodoni, serif' }}>
+                <h2 
+                  className="text-amber-300 text-lg md:text-xl font-medium mb-2 drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]" 
+                  style={{ fontFamily: 'Libre Bodoni, serif', textShadow: '0 2px 8px rgba(0,0,0,0.7)' }}>
                   {slide.subtitle}
                 </h2>
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 uppercase whitespace-nowrap" style={{ fontFamily: 'Libre Bodoni, serif' }}>
+                <h1 
+                  className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 uppercase whitespace-nowrap drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]"
+                  style={{ fontFamily: 'Libre Bodoni, serif', color: '#fff', textShadow: '0 4px 16px rgba(0,0,0,0.9)' }}>
                   {slide.title}
                 </h1>
-                <p className="text-lg md:text-xl text-gray-200 mb-8 max-w-2xl mx-auto" style={{ fontFamily: 'Libre Bodoni, serif' }}>
+                <p 
+                  className="text-lg md:text-xl text-white mb-8 max-w-2xl mx-auto drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]"
+                  style={{ fontFamily: 'Libre Bodoni, serif', color: '#fff', textShadow: '0 2px 8px rgba(0,0,0,0.7)' }}>
                   {slide.description}
                 </p>
                 <a
@@ -138,8 +147,8 @@ const HeroCarousel = () => {
         {slides.map((_, index) => (
           <button
             key={index}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
-              index === currentSlide ? "bg-amber-300" : "bg-white/50 hover:bg-white/70"
+            className={`w-3 h-3 rounded-full transition-all duration-500 ${
+              index === currentSlide ? "bg-amber-300 scale-110" : "bg-white/50 hover:bg-white/70"
             }`}
             onClick={() => {
               setCurrentSlide(index);

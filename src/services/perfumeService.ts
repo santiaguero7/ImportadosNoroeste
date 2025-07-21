@@ -1,7 +1,7 @@
 import { supabase, Perfume, PerfumeInsert, PerfumeUpdate } from '@/lib/supabase'
 
 // Importar servicio de desarrollo como fallback
-import * as devService from './perfumeService.dev'
+// import * as devService from './perfumeService.dev'
 
 // Verificar si Supabase está configurado
 const isSupabaseConfigured = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -9,7 +9,7 @@ const isSupabaseConfigured = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env
 // Obtener todos los perfumes
 export async function getPerfumes() {
   if (!isSupabaseConfigured) {
-    return devService.getPerfumes()
+    return [] // devService removed
   }
 
   const { data, error } = await supabase
@@ -34,7 +34,7 @@ export async function getPerfumesFiltered(filters: {
   size?: string
 }) {
   if (!isSupabaseConfigured) {
-    return devService.getPerfumesFiltered(filters)
+    return [] // devService removed
   }
 
   let query = supabase
@@ -85,7 +85,7 @@ export async function getPerfumesFiltered(filters: {
 // Obtener un perfume por ID
 export async function getPerfumeById(id: number) {
   if (!isSupabaseConfigured) {
-    return devService.getPerfumeById(id)
+    return null // devService removed (getPerfumeById can return null)
   }
 
   const { data, error } = await supabase
@@ -105,7 +105,7 @@ export async function getPerfumeById(id: number) {
 // Crear un nuevo perfume
 export async function createPerfume(perfume: PerfumeInsert) {
   if (!isSupabaseConfigured) {
-    return devService.createPerfume(perfume)
+    return // devService removed (createPerfume returns void)
   }
 
   const { data, error } = await supabase
@@ -125,7 +125,7 @@ export async function createPerfume(perfume: PerfumeInsert) {
 // Actualizar un perfume
 export async function updatePerfume(perfume: PerfumeUpdate) {
   if (!isSupabaseConfigured) {
-    return devService.updatePerfume(perfume)
+    return // devService removed (updatePerfume returns void)
   }
 
   const { data, error } = await supabase
@@ -146,7 +146,7 @@ export async function updatePerfume(perfume: PerfumeUpdate) {
 // Eliminar un perfume
 export async function deletePerfume(id: number) {
   if (!isSupabaseConfigured) {
-    return devService.deletePerfume(id)
+    return // devService removed (deletePerfume returns void)
   }
 
   const { error } = await supabase
@@ -165,7 +165,7 @@ export async function deletePerfume(id: number) {
 // Subir imagen a Supabase Storage
 export async function uploadImage(file: File): Promise<string> {
   if (!isSupabaseConfigured) {
-    return devService.uploadImage(file)
+    return '' // devService removed (uploadImage returns string)
   }
 
   const fileExt = file.name.split('.').pop()
@@ -192,7 +192,7 @@ export async function uploadImage(file: File): Promise<string> {
 // Eliminar imagen de Supabase Storage
 export async function deleteImage(imageUrl: string) {
   if (!isSupabaseConfigured) {
-    return devService.deleteImage(imageUrl)
+    return // devService removed (deleteImage returns void)
   }
 
   // Extraer el path de la URL

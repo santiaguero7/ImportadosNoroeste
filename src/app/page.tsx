@@ -6,7 +6,6 @@ import { getPerfumesFiltered } from '@/services/perfumeService'
 import { Perfume } from '@/lib/supabase'
 import Navbar from '@/components/Navbar'
 import HeroCarousel from '@/components/HeroCarousel'
-import PromoBanner from '@/components/PromoBanner'
 import SpecialOrderSection from '@/components/SpecialOrderSection'
 import Footer from '@/components/Footer'
 import Catalog from '@/components/Catalog'
@@ -70,7 +69,6 @@ function HomeContent() {
         setFilters={setFilters}
       />
       <SpecialOrderSection />
-      <PromoBanner />
       <Footer />
     </div>
   )

@@ -1,0 +1,2 @@
+-- Esquema básico para perfumes
+-- Tabla principal ya creada en Supabase

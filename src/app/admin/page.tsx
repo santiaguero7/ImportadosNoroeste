@@ -45,7 +45,7 @@ export default function AdminPage() {
     try {
       setLoading(true)
       const data = await getPerfumes()
-      setPerfumes(data)
+      setPerfumes(data ?? [])
     } catch (error) {
       console.error('Error loading perfumes:', error)
     } finally {
