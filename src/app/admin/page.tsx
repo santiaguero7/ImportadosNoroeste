@@ -11,6 +11,28 @@ import { Perfume, PerfumeInsert } from '../../lib/supabase'
 import Image from 'next/image'
 
 export default function AdminPage() {
+  // --- LOGIN SIMPLE ---
+  const [isLogged, setIsLogged] = useState(false);
+  const [password, setPassword] = useState("");
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const ok = localStorage.getItem('admin_logged_in');
+      if (ok === 'true') setIsLogged(true);
+    }
+  }, []);
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password === "veigar") {
+      setIsLogged(true);
+      if (typeof window !== 'undefined') localStorage.setItem('admin_logged_in', 'true');
+      setPassword("");
+    } else {
+      alert("Contraseña incorrecta");
+      setPassword("");
+    }
+  };
+
+  // --- HOOKS DE ADMIN ---
   const [perfumes, setPerfumes] = useState<Perfume[]>([])
   const [loading, setLoading] = useState(false)
   const [editingPerfume, setEditingPerfume] = useState<Perfume | null>(null)
@@ -28,9 +50,30 @@ export default function AdminPage() {
     essence: ''
   })
 
+
   useEffect(() => {
-    loadPerfumes()
-  }, [])
+    if (isLogged) {
+      loadPerfumes();
+    }
+  }, [isLogged]);
+
+  if (!isLogged) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#070707]">
+        <form onSubmit={handleLogin} className="bg-[#23232a] p-8 rounded-xl shadow-lg flex flex-col gap-4 w-full max-w-xs border border-[#23232a]">
+          <h2 className="text-xl font-bold text-white mb-2 text-center">Acceso Admin</h2>
+          <input
+            type="password"
+            placeholder="Contraseña"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            className="p-2 rounded bg-[#070707] border border-[#23232a] text-white"
+          />
+          <button type="submit" className="bg-amber-400 hover:bg-amber-500 text-black font-bold py-2 rounded transition">Entrar</button>
+        </form>
+      </div>
+    );
+  }
 
   const handleLogout = async () => {
     try {
@@ -216,7 +259,10 @@ export default function AdminPage() {
             </Button>
             <Button
               variant="outline"
-              onClick={handleLogout}
+              onClick={() => {
+                setIsLogged(false);
+                if (typeof window !== 'undefined') localStorage.removeItem('admin_logged_in');
+              }}
               className="border-red-500 text-red-400 hover:bg-red-500 hover:text-white px-6 py-2 rounded-lg"
             >
               <LogOut className="h-5 w-5 mr-2" />
@@ -325,7 +371,10 @@ export default function AdminPage() {
             <h3 className="text-xl font-bold text-white flex items-center gap-3" style={{ fontFamily: 'Libre Bodoni, serif' }}>
               Inventario de Perfumes
               <span className="text-sm bg-[#23232a] px-3 py-1 rounded-full text-gray-300">
-                {perfumes.length} productos
+                {perfumes.length} tipos de productos
+              </span>
+              <span className="text-sm bg-[#23232a] px-3 py-1 rounded-full text-gray-300">
+                Stock total: {perfumes.reduce((acc, p) => acc + (p.quantity ?? 0), 0)}
               </span>
             </h3>
           </div>
