@@ -1,6 +1,12 @@
 'use client'
 
 import { Search, Menu, ShoppingBag, User, Heart, X, ShoppingCart } from 'lucide-react'
+// Icono WhatsApp SVG
+const WhatsAppIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 32 32" fill="currentColor" width={props.width || 26} height={props.height || 26} {...props}>
+    <path d="M16 3C9.373 3 4 8.373 4 15c0 2.65.87 5.1 2.36 7.1L4 29l7.18-2.32A12.93 12.93 0 0 0 16 27c6.627 0 12-5.373 12-12S22.627 3 16 3zm0 22.5c-1.98 0-3.89-.52-5.54-1.5l-.39-.23-4.27 1.38 1.4-4.15-.25-.4A10.47 10.47 0 0 1 5.5 15c0-5.799 4.701-10.5 10.5-10.5S26.5 9.201 26.5 15 21.799 25.5 16 25.5zm5.13-7.13c-.28-.14-1.65-.81-1.9-.9-.25-.09-.43-.14-.61.14-.18.28-.7.9-.86 1.08-.16.18-.32.2-.6.07-.28-.14-1.18-.43-2.25-1.36-.83-.74-1.39-1.65-1.55-1.93-.16-.28-.02-.43.12-.57.13-.13.28-.32.42-.48.14-.16.18-.28.28-.46.09-.18.05-.34-.02-.48-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47-.16-.01-.34-.01-.52-.01-.18 0-.48.07-.73.34-.25.27-.96.94-.96 2.3s.99 2.66 1.13 2.85c.14.18 1.95 2.98 4.73 4.06.66.28 1.18.45 1.58.58.66.21 1.26.18 1.73.11.53-.08 1.65-.67 1.88-1.32.23-.65.23-1.2.16-1.32-.07-.12-.25-.19-.53-.33z" />
+  </svg>
+);
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useState, useEffect } from 'react'
@@ -37,9 +43,22 @@ const Navbar = ({ onSearch }: NavbarProps) => {
     return () => window.removeEventListener('scroll', controlNavbar);
   }, []);
 
+  // Sincronizar búsqueda nav con catálogo y scrollear
   const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    onSearch(searchQuery)
+    e.preventDefault();
+    const query = searchQuery.trim();
+    if (window.location.pathname === '/') {
+      onSearch(query); // Actualiza el filtro global del catálogo
+      setTimeout(() => {
+        const catalogSection = document.getElementById('catalog');
+        if (catalogSection) {
+          catalogSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      // Si no está en home, redirige con query y hash
+      window.location.href = `/?search=${encodeURIComponent(query)}#catalog`;
+    }
   }
 
   return (
@@ -106,6 +125,17 @@ const Navbar = ({ onSearch }: NavbarProps) => {
             <Button variant="ghost" size="icon" className="text-gray-300 hover:text-amber-300 hover:bg-amber-300/10 transition-all duration-300 lg:hidden border border-gray-400 hover:border-amber-300">
               <Search className="h-5 w-5" />
             </Button>
+            {/* WhatsApp Icon */}
+            <a
+              href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5493811111111'}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="WhatsApp"
+            >
+              <Button variant="ghost" className="text-gray-300 hover:text-amber-300 hover:bg-amber-300/10 transition-all duration-300 hover:scale-110 border border-gray-400 hover:border-amber-300 px-4 py-2 h-10">
+                <WhatsAppIcon />
+              </Button>
+            </a>
             <Link href="/cart">
               <Button variant="ghost" className="text-gray-300 hover:text-amber-300 hover:bg-amber-300/10 transition-all duration-300 hover:scale-110 relative border border-gray-400 hover:border-amber-300 px-4 py-2 h-10">
                 <ShoppingCart className="h-6 w-6" />
