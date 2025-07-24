@@ -20,7 +20,8 @@ function HomeContent() {
     minPrice: 0,
     maxPrice: 999999,
     search: '',
-    size: ''
+    size: '',
+    provincia: 'Santiago del Estero'
   })
 
   const searchParams = useSearchParams()

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useCart } from '../../contexts/CartContext'
+import WhatsAppPopover from '@/components/ui/WhatsAppPopover'
 import { Button } from '../../components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card'
 import { Input } from '../../components/ui/input'
@@ -16,6 +17,8 @@ export default function CartPage() {
     phone: '',
     address: ''
   })
+  const [showWhatsAppPopover, setShowWhatsAppPopover] = useState(false)
+  const [popoverAnchor, setPopoverAnchor] = useState<HTMLElement | null>(null)
 
   const updateQuantity = (perfumeId: number, newQuantity: number) => {
     if (newQuantity <= 0) {
@@ -51,15 +54,14 @@ export default function CartPage() {
     return encodeURIComponent(message)
   }
 
-  const handleWhatsAppOrder = () => {
+  const handleWhatsAppOrder = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (!customerInfo.name || !customerInfo.phone) {
       alert('Por favor completa tu nombre y teléfono')
       return
     }
     
-    const message = generateWhatsAppMessage()
-    const whatsappUrl = `https://wa.me/5491234567890?text=${message}` // Reemplazar con tu número
-    window.open(whatsappUrl, '_blank')
+    setPopoverAnchor(e.currentTarget);
+    setShowWhatsAppPopover(true);
   }
 
   if (state.items.length === 0) {
@@ -71,7 +73,7 @@ export default function CartPage() {
             <h1 className="text-3xl font-bold text-white mb-4">Tu carrito está vacío</h1>
             <p className="text-gray-300 mb-8">Agrega algunos perfumes increíbles a tu carrito</p>
             <Link href="/">
-              <Button className="bg-primary hover:bg-primary/90">
+              <Button className="bg-primary hover:bg-primary/90 cursor-pointer">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Continuar comprando
               </Button>
@@ -92,7 +94,7 @@ export default function CartPage() {
           <Link href="/">
             <Button
               variant="outline"
-              className="border-[#23232a] text-white hover:bg-[#23232a] hover:text-amber-300 transition-colors duration-150 px-6 py-2 rounded-lg"
+              className="border-[#23232a] text-white hover:bg-[#23232a] hover:text-amber-300 transition-colors duration-150 px-6 py-2 rounded-lg cursor-pointer"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Continuar comprando
@@ -135,6 +137,7 @@ export default function CartPage() {
                         size="sm"
                         variant="outline"
                         onClick={() => updateQuantity(item.perfume.id, item.quantity - 1)}
+                        className="cursor-pointer"
                       >
                         <Minus className="h-3 w-3" />
                       </Button>
@@ -143,6 +146,7 @@ export default function CartPage() {
                         size="sm"
                         variant="outline"
                         onClick={() => updateQuantity(item.perfume.id, item.quantity + 1)}
+                        className="cursor-pointer"
                       >
                         <Plus className="h-3 w-3" />
                       </Button>
@@ -154,7 +158,7 @@ export default function CartPage() {
                         size="sm"
                         variant="ghost"
                         onClick={() => removeItem(item.perfume.id)}
-                        className="text-red-400 hover:text-red-300"
+                        className="text-red-400 hover:text-red-300 cursor-pointer"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -205,11 +209,18 @@ export default function CartPage() {
                 </div>
 
                 <Button 
-                  className="w-full bg-green-800 hover:bg-green-700"
+                  className="w-full bg-green-800 hover:bg-green-700 cursor-pointer"
                   onClick={handleWhatsAppOrder}
                 >
                   Comprar por WhatsApp 📱
                 </Button>
+                <WhatsAppPopover 
+                  isOpen={showWhatsAppPopover} 
+                  onClose={() => setShowWhatsAppPopover(false)} 
+                  anchorEl={popoverAnchor} 
+                  direction="down" 
+                  customMessage={generateWhatsAppMessage()}
+                />
               </CardContent>
             </Card>
           </div>

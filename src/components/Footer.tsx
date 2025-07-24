@@ -1,18 +1,27 @@
 import { Instagram, Heart, MessageCircle } from 'lucide-react'
+import { useState } from 'react'
+import WhatsAppPopover from '@/components/ui/WhatsAppPopover'
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
+  const [showWhatsAppPopover, setShowWhatsAppPopover] = useState(false);
+  const [popoverAnchor, setPopoverAnchor] = useState<HTMLElement | null>(null);
   const socialLinks = [
     {
       name: 'Instagram',
       icon: <Instagram size={20} />,
-      url: 'https://instagram.com'
+      url: 'https://instagram.com',
+      onClick: undefined
     },
     {
       name: 'WhatsApp',
       icon: <MessageCircle size={20} />,
-      url: 'https://wa.me/5491112345678'
+      url: undefined,
+      onClick: (e: any) => {
+        setPopoverAnchor(e.currentTarget);
+        setShowWhatsAppPopover(true);
+      }
     }
   ];
 
@@ -30,24 +39,42 @@ const Footer = () => {
               onClick={scrollToTop}
               className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-gray-400 to-gray-300 bg-clip-text text-transparent hover:opacity-80 transition-opacity font-playfair"
             >
-              NOROESTE IMPORTADOS 
+              Importados Noroeste
             </button>
           </div>
 
           {/* Social Links */}
           <div className="flex justify-center space-x-4 sm:space-x-6">
             {socialLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-amber-300 hover:text-amber-400 transition-all duration-300 p-2 sm:p-3 rounded-lg hover:bg-amber-300/10 hover:scale-110"
-                aria-label={link.name}
-              >
-                {link.icon}
-              </a>
+              link.url ? (
+                <a
+                  key={link.name}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-amber-300 hover:text-amber-400 transition-all duration-300 p-2 sm:p-3 rounded-lg hover:bg-amber-300/10 hover:scale-110"
+                  aria-label={link.name}
+                >
+                  {link.icon}
+                </a>
+              ) : (
+                <button
+                  key={link.name}
+                  onClick={link.onClick}
+                  className="text-amber-300 hover:text-amber-400 transition-all duration-300 p-2 sm:p-3 rounded-lg hover:bg-amber-300/10 hover:scale-110 cursor-pointer"
+                  aria-label={link.name}
+                >
+                  {link.icon}
+                </button>
+              )
             ))}
+            <WhatsAppPopover 
+              isOpen={showWhatsAppPopover} 
+              onClose={() => setShowWhatsAppPopover(false)} 
+              anchorEl={popoverAnchor} 
+              direction="up" 
+              customMessage="Hola! Me interesa conocer más sobre sus fragancias. ¿Podrían ayudarme?"
+            />
           </div>
 
           {/* Copyright */}

@@ -3,6 +3,7 @@ import PerfumeModal from "@/components/PerfumeModal";
 import FilterSidebar from "@/components/FilterSidebar";
 
 import { Button } from "@/components/ui/button";
+import Toast from "@/components/ui/Toast";
 import { Input } from "@/components/ui/input";
 import { Filter, Loader2, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { Perfume } from "@/lib/supabase";
@@ -30,6 +31,7 @@ const Catalog: React.FC<CatalogProps> = ({
 }) => {
   const [selectedPerfume, setSelectedPerfume] = useState<Perfume | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [toast, setToast] = useState<{ show: boolean; message: string; x?: number; y?: number }>({ show: false, message: "" });
 
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -69,12 +71,20 @@ const Catalog: React.FC<CatalogProps> = ({
     setSelectedPerfume(null)
   }
 
-  const handleAddToCart = (perfume: Perfume) => {
-    dispatch({ type: 'ADD_ITEM', perfume })
-
-  }
+  const handleAddToCart = (perfume: Perfume, event?: React.MouseEvent) => {
+    dispatch({ type: 'ADD_ITEM', perfume });
+    setToast({ show: true, message: `${perfume.name} agregado al carrito`, x: 20, y: 20 });
+  }  
   return (
-    <section id="catalog" className="py-8 sm:py-10 lg:py-12 bg-[#070707] min-h-screen">
+    <>
+      <Toast 
+        message={toast.message} 
+        show={toast.show} 
+        onClose={() => setToast((t) => ({ ...t, show: false }))} 
+        x={toast.x} 
+        y={toast.y}
+      />
+      <section id="catalog" className="py-8 sm:py-10 lg:py-12 bg-[#070707] min-h-screen">
       <div className="container mx-auto px-4 flex flex-col items-center justify-center">
         {/* Title Section */}
         <div className="text-center mb-8 sm:mb-12">
@@ -85,14 +95,15 @@ const Catalog: React.FC<CatalogProps> = ({
             Descubre nuestra selección cuidadosamente elegida de las fragancias más exclusivas y populares
           </p>
           
-          {/* Nueva barra de filtros: izquierda (Filtrar/Limpiar), centro (buscador), derecha (provincia) */}
+          {/* Nueva barra de filtros: izquierda (Filtrar/Limpiar), centro (buscador), derecha (provincia), WhatsApp */}
           <div className="flex flex-col sm:flex-row gap-4 justify-between items-center max-w-3xl mx-auto px-4 w-full">
+
             {/* Izquierda: Filtrar y Limpiar */}
             <div className="flex gap-3 w-full sm:w-auto justify-start">
               <Button
                 variant="outline"
                 onClick={() => setShowFilters(!showFilters)}
-                className="border-amber-400 text-amber-400 hover:bg-amber-400 hover:text-black font-bold text-sm sm:text-base px-4 py-3 rounded-xl transition-all duration-300 hover:scale-105"
+                className="border-amber-400 text-amber-400 hover:bg-amber-400 hover:text-black font-bold text-sm sm:text-base px-4 py-3 rounded-xl transition-all duration-300 hover:scale-105 cursor-pointer"
               >
                 <Filter className="h-4 w-4 mr-2" />
                 Filtros
@@ -103,7 +114,7 @@ const Catalog: React.FC<CatalogProps> = ({
                   setCurrentPage(1)
                   setFilters({ category: '', minPrice: 0, maxPrice: 999999, search: '', size: '', provincia: 'Santiago del Estero' })
                 }}
-                className="border-amber-400 text-amber-400 hover:bg-amber-400 hover:text-black font-bold text-sm sm:text-base px-4 py-3 rounded-xl transition-all duration-300 hover:scale-105"
+                className="border-amber-400 text-amber-400 hover:bg-amber-400 hover:text-black font-bold text-sm sm:text-base px-4 py-3 rounded-xl transition-all duration-300 hover:scale-105 cursor-pointer"
               >
                 Limpiar
               </Button>
@@ -126,14 +137,14 @@ const Catalog: React.FC<CatalogProps> = ({
             <div className="flex gap-2 ml-2 justify-end w-full sm:w-auto">
               <Button
                 variant={filters.provincia === 'Santiago del Estero' || !filters.provincia ? 'default' : 'outline'}
-                className={`px-4 py-2 rounded-lg font-bold text-sm border-amber-400 text-amber-400 hover:bg-amber-400 hover:text-black transition-all duration-200 ${filters.provincia === 'Santiago del Estero' || !filters.provincia ? 'bg-amber-400 text-black' : ''}`}
+                className={`px-4 py-2 rounded-lg font-bold text-sm border-amber-400 text-amber-400 hover:bg-amber-400 hover:text-black transition-all duration-200 ${filters.provincia === 'Santiago del Estero' || !filters.provincia ? 'bg-amber-400 text-black' : ''} cursor-pointer`}
                 onClick={() => handleFilterChangeWithReset({ ...filters, provincia: 'Santiago del Estero' })}
               >
                 Santiago del Estero
               </Button>
               <Button
                 variant={filters.provincia === 'Cordoba' ? 'default' : 'outline'}
-                className={`px-4 py-2 rounded-lg font-bold text-sm border-amber-400 text-amber-400 hover:bg-amber-400 hover:text-black transition-all duration-200 ${filters.provincia === 'Cordoba' ? 'bg-amber-400 text-black' : ''}`}
+                className={`px-4 py-2 rounded-lg font-bold text-sm border-amber-400 text-amber-400 hover:bg-amber-400 hover:text-black transition-all duration-200 ${filters.provincia === 'Cordoba' ? 'bg-amber-400 text-black' : ''} cursor-pointer`}
                 onClick={() => handleFilterChangeWithReset({ ...filters, provincia: 'Cordoba' })}
               >
                 Córdoba
@@ -284,7 +295,8 @@ const Catalog: React.FC<CatalogProps> = ({
 
 
       </div>
-    </section>
+      </section>
+    </>
   );
 };
 

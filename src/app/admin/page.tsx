@@ -70,7 +70,7 @@ export default function AdminPage() {
             onChange={e => setPassword(e.target.value)}
             className="p-2 rounded bg-[#070707] border border-[#23232a] text-white"
           />
-          <button type="submit" className="bg-amber-400 hover:bg-amber-500 text-black font-bold py-2 rounded transition">Entrar</button>
+          <button type="submit" className="bg-amber-400 hover:bg-amber-500 text-black font-bold py-2 rounded transition cursor-pointer">Entrar</button>
         </form>
       </div>
     );
@@ -249,7 +249,7 @@ export default function AdminPage() {
             <Button
               onClick={() => setShowForm(true)}
               variant="outline"
-              className="border-[#23232a] text-white hover:bg-[#23232a] px-6 py-2 rounded-lg"
+              className="border-[#23232a] text-white hover:bg-[#23232a] px-6 py-2 rounded-lg cursor-pointer"
             >
               <Plus className="h-5 w-5 mr-2" />
               Agregar Perfume
@@ -257,7 +257,7 @@ export default function AdminPage() {
             <Button
               variant="outline"
               onClick={() => window.location.href = '/'}
-              className="border-[#23232a] text-white hover:bg-[#23232a] px-6 py-2 rounded-lg"
+              className="border-[#23232a] text-white hover:bg-[#23232a] px-6 py-2 rounded-lg cursor-pointer"
             >
               Ver Sitio
             </Button>
@@ -267,7 +267,7 @@ export default function AdminPage() {
                 setIsLogged(false);
                 if (typeof window !== 'undefined') localStorage.removeItem('admin_logged_in');
               }}
-              className="border-red-500 text-red-400 hover:bg-red-500 hover:text-white px-6 py-2 rounded-lg"
+              className="border-red-500 text-red-400 hover:bg-red-500 hover:text-white px-6 py-2 rounded-lg cursor-pointer"
             >
               <LogOut className="h-5 w-5 mr-2" />
               Cerrar Sesión
@@ -368,10 +368,10 @@ export default function AdminPage() {
                     )}
                   </div>
                   <div className="flex gap-2 pt-4">
-                    <Button type="submit" disabled={loading} className="bg-blue-600 hover:bg-blue-700 text-white">
+                    <Button type="submit" disabled={loading} className="bg-blue-600 hover:bg-blue-700 text-white cursor-pointer">
                       {loading ? 'Guardando...' : editingPerfume ? 'Actualizar' : 'Crear'}
                     </Button>
-                    <Button type="button" onClick={resetForm} className="bg-gray-700 hover:bg-gray-800 text-white border border-[#23232a] font-bold">
+                    <Button type="button" onClick={resetForm} className="bg-gray-700 hover:bg-gray-800 text-white border border-[#23232a] font-bold cursor-pointer">
                       Cancelar
                     </Button>
                   </div>
@@ -398,34 +398,34 @@ export default function AdminPage() {
             <table className="min-w-full">
               <thead className="bg-[#23232a] border-b border-[#23232a]">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-200 uppercase tracking-wider" style={{ fontFamily: 'Libre Bodoni, serif' }}>
+                  <th className="px-3 py-4 text-center text-sm font-bold text-gray-200 uppercase tracking-wider w-16" style={{ fontFamily: 'Libre Bodoni, serif' }}>
                     Imagen
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-200 uppercase tracking-wider" style={{ fontFamily: 'Libre Bodoni, serif' }}>
+                  <th className="px-3 py-4 text-center text-sm font-bold text-gray-200 uppercase tracking-wider w-2/5" style={{ fontFamily: 'Libre Bodoni, serif' }}>
                     Producto
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-200 uppercase tracking-wider" style={{ fontFamily: 'Libre Bodoni, serif' }}>
+                  <th className="px-2 py-4 text-center text-sm font-bold text-gray-200 uppercase tracking-wider w-20" style={{ fontFamily: 'Libre Bodoni, serif' }}>
                     Marca
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-200 uppercase tracking-wider" style={{ fontFamily: 'Libre Bodoni, serif' }}>
+                  <th className="px-2 py-4 text-center text-sm font-bold text-gray-200 uppercase tracking-wider w-20" style={{ fontFamily: 'Libre Bodoni, serif' }}>
                     Categoría
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-200 uppercase tracking-wider" style={{ fontFamily: 'Libre Bodoni, serif' }}>
+                  <th className="px-2 py-4 text-center text-sm font-bold text-gray-200 uppercase tracking-wider w-20" style={{ fontFamily: 'Libre Bodoni, serif' }}>
                     Esencia
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-200 uppercase tracking-wider" style={{ fontFamily: 'Libre Bodoni, serif' }}>
+                  <th className="px-2 py-4 text-center text-sm font-bold text-gray-200 uppercase tracking-wider w-16" style={{ fontFamily: 'Libre Bodoni, serif' }}>
                     Tamaño
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-200 uppercase tracking-wider" style={{ fontFamily: 'Libre Bodoni, serif' }}>
+                  <th className="px-2 py-4 text-center text-sm font-bold text-gray-200 uppercase tracking-wider w-20" style={{ fontFamily: 'Libre Bodoni, serif' }}>
                     Precio
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-200 uppercase tracking-wider" style={{ fontFamily: 'Libre Bodoni, serif' }}>
+                  <th className="px-2 py-4 text-center text-sm font-bold text-gray-200 uppercase tracking-wider w-12" style={{ fontFamily: 'Libre Bodoni, serif' }}>
                     Stock
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-200 uppercase tracking-wider" style={{ fontFamily: 'Libre Bodoni, serif' }}>
+                  <th className="px-2 py-4 text-center text-sm font-bold text-gray-200 uppercase tracking-wider w-12" style={{ fontFamily: 'Libre Bodoni, serif' }}>
                     Lugar
                   </th>
-                  <th className="px-6 py-4 text-center text-sm font-bold text-gray-200 uppercase tracking-wider" style={{ fontFamily: 'Libre Bodoni, serif' }}>
+                  <th className="px-4 py-4 text-center text-sm font-bold text-gray-200 uppercase tracking-wider w-32" style={{ fontFamily: 'Libre Bodoni, serif' }}>
                     Acciones
                   </th>
                 </tr>
@@ -491,7 +491,7 @@ export default function AdminPage() {
                         variant="outline" 
                         onClick={() => handleEdit(perfume)} 
                         title="Editar"
-                        className="border-[#23232a] text-blue-300 hover:bg-blue-900/30 hover:border-blue-900/40"
+                        className="border-[#23232a] text-blue-300 hover:bg-blue-900/30 hover:border-blue-900/40 cursor-pointer"
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
@@ -500,7 +500,7 @@ export default function AdminPage() {
                         variant="outline" 
                         onClick={() => handleDelete(perfume.id)} 
                         title="Eliminar"
-                        className="border-[#23232a] text-red-400 hover:bg-red-900/30 hover:border-red-900/40"
+                        className="border-[#23232a] text-red-400 hover:bg-red-900/30 hover:border-red-900/40 cursor-pointer"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -509,7 +509,7 @@ export default function AdminPage() {
                         variant="outline" 
                         onClick={() => handleAddStock(perfume)} 
                         title="Agregar stock"
-                        className="border-[#23232a] text-green-300 hover:bg-green-900/30 hover:border-green-900/40"
+                        className="border-[#23232a] text-green-300 hover:bg-green-900/30 hover:border-green-900/40 cursor-pointer"
                       >
                         <Plus className="h-4 w-4" />
                       </Button>
@@ -518,7 +518,7 @@ export default function AdminPage() {
                         variant="outline" 
                         onClick={() => handleRemoveStock(perfume)} 
                         title="Restar stock"
-                        className="border-[#23232a] text-red-400 hover:bg-red-900/30 hover:border-red-900/40"
+                        className="border-[#23232a] text-red-400 hover:bg-red-900/30 hover:border-red-900/40 cursor-pointer"
                       >
                         <span className="font-bold text-lg">-</span>
                       </Button>

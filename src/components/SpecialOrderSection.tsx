@@ -2,14 +2,15 @@
 
 import { Button } from '@/components/ui/button'
 import { MessageCircle } from 'lucide-react'
+import { useState } from 'react'
+import WhatsAppPopover from '@/components/ui/WhatsAppPopover'
 
 export default function SpecialOrderSection() {
-  const handleWhatsAppClick = () => {
-    const phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5491112345678'
-    const message = encodeURIComponent(
-      '¡Hola! Estoy buscando una fragancia en especial que no encontré en el catálogo. ¿Podrían ayudarme a conseguirla?'
-    )
-    window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank')
+  const [showWhatsAppPopover, setShowWhatsAppPopover] = useState(false)
+  const [popoverAnchor, setPopoverAnchor] = useState<HTMLElement | null>(null)
+  const handleWhatsAppClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setPopoverAnchor(e.currentTarget);
+    setShowWhatsAppPopover(true);
   }
 
   return (
@@ -28,11 +29,18 @@ export default function SpecialOrderSection() {
             
             <Button
               onClick={handleWhatsAppClick}
-              className="bg-green-800 hover:bg-green-700 text-white font-bold px-8 py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
+              className="bg-green-800 hover:bg-green-700 text-white font-bold px-8 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 cursor-pointer"
             >
               <MessageCircle className="h-5 w-5 mr-2" />
               Consultar por WhatsApp
             </Button>
+            <WhatsAppPopover 
+              isOpen={showWhatsAppPopover} 
+              onClose={() => setShowWhatsAppPopover(false)} 
+              anchorEl={popoverAnchor} 
+              direction="down" 
+              customMessage="Hola! Estoy buscando una fragancia especial que no encuentro en su catálogo. ¿Podrían ayudarme a conseguirla?" 
+            />
           </div>
         </div>
       </div>
