@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import Toast from '@/components/ui/Toast'
+// import SimpleToast from '@/components/ui/SimpleToast'
 import { X, Heart, ShoppingCart, MessageCircle } from 'lucide-react'
 import { Perfume } from '@/lib/supabase'
 import { useState } from 'react'
@@ -17,7 +17,7 @@ interface PerfumeModalProps {
 const PerfumeModal = ({ perfume, isOpen, onClose, onAddToCart }: PerfumeModalProps) => {
   const [isLiked, setIsLiked] = useState(false)
   const [quantity, setQuantity] = useState(1)
-  const [toast, setToast] = useState<{ show: boolean; message: string }>({ show: false, message: "" });
+  // Eliminar Toast, si quieres notificación usa SimpleToast
   const { dispatch } = useCart()
 
   if (!isOpen || !perfume) return null
@@ -26,8 +26,7 @@ const PerfumeModal = ({ perfume, isOpen, onClose, onAddToCart }: PerfumeModalPro
     for (let i = 0; i < quantity; i++) {
       onAddToCart(perfume)
     }
-    setToast({ show: true, message: `${quantity} ${perfume.name} agregado${quantity > 1 ? 's' : ''} al carrito` });
-    setTimeout(() => setToast((t) => ({ ...t, show: false })), 2200);
+    // Aquí podrías usar setToast de Catalog si quieres notificación global
     onClose()
   }
 
@@ -75,13 +74,13 @@ const PerfumeModal = ({ perfume, isOpen, onClose, onAddToCart }: PerfumeModalPro
 
   return (
     <>
-      <Toast message={toast.message} show={toast.show} onClose={() => setToast((t) => ({ ...t, show: false }))} />
+      {/* Eliminar Toast, si quieres notificación usa SimpleToast */}
       <div
         className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
         onClick={onClose}
       >
       <div
-        className="bg-gradient-to-br from-[#2a2a2a] to-[#1f1f1f] border border-gray-600/20 rounded-xl max-w-lg w-full overflow-hidden shadow-2xl"
+        className="bg-gradient-to-br from-[#1a1a1a] to-[#0f0f0f] border border-gray-600/20 rounded-xl max-w-lg w-full overflow-hidden shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
@@ -145,7 +144,7 @@ const PerfumeModal = ({ perfume, isOpen, onClose, onAddToCart }: PerfumeModalPro
           </div>
           <div className="flex gap-2">
             <Button
-              className="flex-1 bg-[#23232a] text-white font-bold hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 cursor-pointer"
+              className="flex-1 bg-[#23232a] text-white font-bold hover:bg-amber-400 hover:text-black transition-colors duration-200 cursor-pointer"
               onClick={handleAddToCart}
             >
               <ShoppingCart className="h-4 w-4 mr-2" />

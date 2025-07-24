@@ -3,7 +3,6 @@ import PerfumeModal from "@/components/PerfumeModal";
 import FilterSidebar from "@/components/FilterSidebar";
 
 import { Button } from "@/components/ui/button";
-import Toast from "@/components/ui/Toast";
 import { Input } from "@/components/ui/input";
 import { Filter, Loader2, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { Perfume } from "@/lib/supabase";
@@ -31,7 +30,6 @@ const Catalog: React.FC<CatalogProps> = ({
 }) => {
   const [selectedPerfume, setSelectedPerfume] = useState<Perfume | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [toast, setToast] = useState<{ show: boolean; message: string; x?: number; y?: number }>({ show: false, message: "" });
 
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -73,17 +71,9 @@ const Catalog: React.FC<CatalogProps> = ({
 
   const handleAddToCart = (perfume: Perfume, event?: React.MouseEvent) => {
     dispatch({ type: 'ADD_ITEM', perfume });
-    setToast({ show: true, message: `${perfume.name} agregado al carrito`, x: 20, y: 20 });
-  }  
+  }
   return (
     <>
-      <Toast 
-        message={toast.message} 
-        show={toast.show} 
-        onClose={() => setToast((t) => ({ ...t, show: false }))} 
-        x={toast.x} 
-        y={toast.y}
-      />
       <section id="catalog" className="py-8 sm:py-10 lg:py-12 bg-[#070707] min-h-screen">
       <div className="container mx-auto px-4 flex flex-col items-center justify-center">
         {/* Title Section */}

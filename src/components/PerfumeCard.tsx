@@ -13,6 +13,7 @@ interface PerfumeCardProps {
 
 const PerfumeCard = ({ perfume, onOpenModal, onAddToCart }: PerfumeCardProps) => {
   const [isLiked, setIsLiked] = useState(false)
+  const [added, setAdded] = useState(false)
 
   const toggleLike = () => {
     setIsLiked(!isLiked)
@@ -96,16 +97,25 @@ const PerfumeCard = ({ perfume, onOpenModal, onAddToCart }: PerfumeCardProps) =>
               </div>
             </div>
 
-            <Button
-              className="w-full bg-[#23232a] text-white font-bold hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 cursor-pointer"
-              onClick={(e) => {
-                e.stopPropagation()
-                onAddToCart(perfume, e)
-              }}
-            >
-              <ShoppingCart className="h-4 w-4 mr-2" />
-              Agregar al carrito
-            </Button>
+            <div className="relative w-full">
+              <Button
+                className="w-full bg-[#23232a] text-white font-bold hover:bg-amber-400 hover:text-black transition-colors duration-200 cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onAddToCart(perfume, e)
+                  setAdded(true)
+                  setTimeout(() => setAdded(false), 1200)
+                }}
+              >
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                Agregar al carrito
+              </Button>
+              {added && (
+                <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#23232a] text-amber-400 px-3 py-1 rounded-xl shadow-lg text-xs font-bold z-20 transition-all duration-300 border border-amber-400">
+                  Agregado
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
