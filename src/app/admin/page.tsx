@@ -47,7 +47,8 @@ export default function AdminPage() {
     imageFile: null as File | null,
     quantity: '',
     size: '',
-    essence: ''
+    essence: '',
+    provincia: 'Santiago del Estero' as 'Santiago del Estero' | 'Cordoba'
   })
 
 
@@ -124,7 +125,8 @@ export default function AdminPage() {
         image_url: toNullIfEmpty(imageUrl) ?? '',
         quantity: formData.quantity === '' ? 0 : Number(formData.quantity),
         size: formData.size,
-        essence: formData.essence
+        essence: formData.essence,
+        provincia: formData.provincia
       }
 
       if (editingPerfume) {
@@ -155,7 +157,8 @@ export default function AdminPage() {
       imageFile: null,
       quantity: perfume.quantity?.toString() || '',
       size: perfume.size || '',
-      essence: perfume.essence || ''
+      essence: perfume.essence || '',
+      provincia: perfume.provincia || 'Santiago del Estero'
     })
     setShowForm(true)
   }
@@ -221,7 +224,8 @@ export default function AdminPage() {
       imageFile: null,
       quantity: '',
       size: '',
-      essence: ''
+      essence: '',
+      provincia: 'Santiago del Estero'
     })
     setEditingPerfume(null)
     setShowForm(false)
@@ -273,7 +277,7 @@ export default function AdminPage() {
 
         {/* Form Modal */}
         {showForm && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={e => { if (e.target === e.currentTarget) setShowForm(false) }}>
             <Card className="w-full max-w-2xl mx-auto bg-[#23232a] border border-[#23232a] shadow-lg">
               <CardHeader className="border-b border-[#23232a] bg-[#23232a]">
                 <CardTitle className="text-lg font-medium text-white" style={{ fontFamily: 'Libre Bodoni, serif' }}>
@@ -339,6 +343,18 @@ export default function AdminPage() {
                     </select>
                   </div>
                   <div className="space-y-2">
+                    <label htmlFor="provincia" className="text-sm font-medium text-gray-300">Provincia</label>
+                    <select
+                      id="provincia"
+                      value={formData.provincia}
+                      onChange={e => setFormData(prev => ({ ...prev, provincia: e.target.value as any }))}
+                      className="w-full p-2 border border-[#23232a] rounded-md bg-[#070707] text-white"
+                    >
+                      <option value="Santiago del Estero">Santiago del Estero</option>
+                      <option value="Cordoba">Córdoba</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2">
                     <label htmlFor="description" className="text-sm font-medium text-gray-300">Descripción</label>
                     <textarea id="description" value={formData.description} onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))} placeholder="Descripción del perfume" className="w-full p-2 border border-[#23232a] rounded-md bg-[#070707] text-white" rows={3} required />
                   </div>
@@ -355,7 +371,7 @@ export default function AdminPage() {
                     <Button type="submit" disabled={loading} className="bg-blue-600 hover:bg-blue-700 text-white">
                       {loading ? 'Guardando...' : editingPerfume ? 'Actualizar' : 'Crear'}
                     </Button>
-                    <Button type="button" variant="outline" onClick={resetForm} className="border-[#23232a] text-gray-300 hover:bg-[#23232a]">
+                    <Button type="button" onClick={resetForm} className="bg-gray-700 hover:bg-gray-800 text-white border border-[#23232a] font-bold">
                       Cancelar
                     </Button>
                   </div>
@@ -405,6 +421,9 @@ export default function AdminPage() {
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-bold text-gray-200 uppercase tracking-wider" style={{ fontFamily: 'Libre Bodoni, serif' }}>
                     Stock
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-200 uppercase tracking-wider" style={{ fontFamily: 'Libre Bodoni, serif' }}>
+                    Lugar
                   </th>
                   <th className="px-6 py-4 text-center text-sm font-bold text-gray-200 uppercase tracking-wider" style={{ fontFamily: 'Libre Bodoni, serif' }}>
                     Acciones
@@ -462,6 +481,9 @@ export default function AdminPage() {
                       {perfume.quantity ?? 0}
                     </span>
                   </td>
+                    <td className="px-6 py-4 font-bold text-amber-300 text-center">
+                      {perfume.provincia === 'Cordoba' ? 'Cba' : 'Sgo'}
+                    </td>
                   <td className="px-6 py-4">
                     <div className="flex gap-2 justify-center">
                       <Button 

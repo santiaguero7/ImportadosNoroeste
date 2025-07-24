@@ -17,6 +17,7 @@ export interface Perfume {
   quantity: number
   size: string
   essence: string
+  provincia: 'Santiago del Estero' | 'Cordoba'
   created_at: string
   updated_at: string
 }
@@ -31,6 +32,7 @@ export interface PerfumeInsert {
   quantity: number
   size: string
   essence: string
+  provincia: 'Santiago del Estero' | 'Cordoba'
 }
 
 export interface PerfumeUpdate {
@@ -44,4 +46,5 @@ export interface PerfumeUpdate {
   quantity?: number
   size?: string
   essence?: string
+  provincia?: 'Santiago del Estero' | 'Cordoba'
 }

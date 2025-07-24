@@ -32,6 +32,14 @@ const Catalog: React.FC<CatalogProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const [currentPage, setCurrentPage] = useState(1)
+
+  // Scroll al top del catálogo al cambiar de página
+  const scrollToCatalog = () => {
+    const el = document.getElementById('catalog');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
   const { dispatch } = useCart()
 
   const ITEMS_PER_PAGE = 12
@@ -77,32 +85,32 @@ const Catalog: React.FC<CatalogProps> = ({
             Descubre nuestra selección cuidadosamente elegida de las fragancias más exclusivas y populares
           </p>
           
-          {/* Filter Button and Search Bar */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-3xl mx-auto px-4">
-            <div className="flex gap-3">
+          {/* Nueva barra de filtros: izquierda (Filtrar/Limpiar), centro (buscador), derecha (provincia) */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-between items-center max-w-3xl mx-auto px-4 w-full">
+            {/* Izquierda: Filtrar y Limpiar */}
+            <div className="flex gap-3 w-full sm:w-auto justify-start">
               <Button
                 variant="outline"
                 onClick={() => setShowFilters(!showFilters)}
-                className="border-amber-400 text-amber-400 hover:bg-amber-400 hover:text-black font-bold text-sm sm:text-base px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105"
+                className="border-amber-400 text-amber-400 hover:bg-amber-400 hover:text-black font-bold text-sm sm:text-base px-4 py-3 rounded-xl transition-all duration-300 hover:scale-105"
               >
                 <Filter className="h-4 w-4 mr-2" />
                 Filtros
               </Button>
-              
               <Button
                 variant="outline"
                 onClick={() => {
                   setCurrentPage(1)
-                  setFilters({ category: '', minPrice: 0, maxPrice: 999999, search: '', size: '' })
+                  setFilters({ category: '', minPrice: 0, maxPrice: 999999, search: '', size: '', provincia: 'Santiago del Estero' })
                 }}
-                className="border-amber-400 text-amber-400 hover:bg-amber-400 hover:text-black font-bold text-sm sm:text-base px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105"
+                className="border-amber-400 text-amber-400 hover:bg-amber-400 hover:text-black font-bold text-sm sm:text-base px-4 py-3 rounded-xl transition-all duration-300 hover:scale-105"
               >
                 Limpiar
               </Button>
             </div>
-            
-            <div className="flex-1 w-full sm:max-w-md">
-              <div className="relative group">
+            {/* Centro: Buscador */}
+            <div className="flex-1 w-full sm:max-w-xs flex justify-center">
+              <div className="relative group w-full">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-amber-300 h-4 w-4 transition-colors duration-200" />
                 <Input
                   type="text"
@@ -113,6 +121,23 @@ const Catalog: React.FC<CatalogProps> = ({
                   style={{ boxShadow: 'none', fontFamily: 'Libre Bodoni, serif' }}
                 />
               </div>
+            </div>
+            {/* Derecha: Provincia */}
+            <div className="flex gap-2 ml-2 justify-end w-full sm:w-auto">
+              <Button
+                variant={filters.provincia === 'Santiago del Estero' || !filters.provincia ? 'default' : 'outline'}
+                className={`px-4 py-2 rounded-lg font-bold text-sm border-amber-400 text-amber-400 hover:bg-amber-400 hover:text-black transition-all duration-200 ${filters.provincia === 'Santiago del Estero' || !filters.provincia ? 'bg-amber-400 text-black' : ''}`}
+                onClick={() => handleFilterChangeWithReset({ ...filters, provincia: 'Santiago del Estero' })}
+              >
+                Santiago del Estero
+              </Button>
+              <Button
+                variant={filters.provincia === 'Cordoba' ? 'default' : 'outline'}
+                className={`px-4 py-2 rounded-lg font-bold text-sm border-amber-400 text-amber-400 hover:bg-amber-400 hover:text-black transition-all duration-200 ${filters.provincia === 'Cordoba' ? 'bg-amber-400 text-black' : ''}`}
+                onClick={() => handleFilterChangeWithReset({ ...filters, provincia: 'Cordoba' })}
+              >
+                Córdoba
+              </Button>
             </div>
           </div>
         </div>
@@ -170,7 +195,13 @@ const Catalog: React.FC<CatalogProps> = ({
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                      onClick={() => {
+                        setCurrentPage(prev => {
+                          const newPage = Math.max(prev - 1, 1);
+                          setTimeout(scrollToCatalog, 0);
+                          return newPage;
+                        });
+                      }}
                       disabled={currentPage === 1}
                       className="border-amber-400/50 text-amber-400 hover:bg-amber-400 hover:text-black disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -184,7 +215,12 @@ const Catalog: React.FC<CatalogProps> = ({
                           key={page}
                           variant={page === currentPage ? "default" : "outline"}
                           size="sm"
-                          onClick={() => setCurrentPage(page)}
+                          onClick={() => {
+                            setCurrentPage(() => {
+                              setTimeout(scrollToCatalog, 0);
+                              return page;
+                            });
+                          }}
                           className={
                             page === currentPage
                               ? "bg-amber-400 text-black hover:bg-amber-500"
@@ -199,7 +235,13 @@ const Catalog: React.FC<CatalogProps> = ({
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                      onClick={() => {
+                        setCurrentPage(prev => {
+                          const newPage = Math.min(prev + 1, totalPages);
+                          setTimeout(scrollToCatalog, 0);
+                          return newPage;
+                        });
+                      }}
                       disabled={currentPage === totalPages}
                       className="border-amber-400/50 text-amber-400 hover:bg-amber-400 hover:text-black disabled:opacity-50 disabled:cursor-not-allowed"
                     >

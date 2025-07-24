@@ -49,7 +49,7 @@ const FilterSidebar = ({ filters, onFilterChange, isOpen, onClose }: FilterSideb
   }
 
   return (
-    <div className="p-4 h-full max-h-[90vh] overflow-y-auto rounded-t-2xl rounded-b-2xl" style={{ background: '#070707' }}>
+    <div className="p-4 h-full rounded-t-2xl rounded-b-2xl" style={{ background: '#070707' }}>
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-lg font-playfair font-bold text-amber-300 flex items-center gap-2">
           <Filter className="h-4 w-4 text-amber-300" />

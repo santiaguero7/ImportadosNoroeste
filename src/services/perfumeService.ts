@@ -32,6 +32,7 @@ export async function getPerfumesFiltered(filters: {
   maxPrice?: number
   search?: string
   size?: string
+  provincia?: string
 }) {
   if (!isSupabaseConfigured) {
     return [] // devService removed
@@ -60,9 +61,15 @@ export async function getPerfumesFiltered(filters: {
     query = query.lte('price', filters.maxPrice)
   }
 
+
   // Filtro por tamaño
   if (filters.size && filters.size !== '') {
     query = query.eq('size', filters.size)
+  }
+
+  // Filtro por provincia
+  if (filters.provincia && filters.provincia !== '') {
+    query = query.eq('provincia', filters.provincia)
   }
 
   // Filtro por búsqueda
