@@ -1,10 +1,10 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-// import SimpleToast from '@/components/ui/SimpleToast'
+import SimpleToast from '@/components/ui/SimpleToast'
 import { X, Heart, ShoppingCart, MessageCircle } from 'lucide-react'
 import { Perfume } from '@/lib/supabase'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useCart } from '@/contexts/CartContext'
 
 interface PerfumeModalProps {
@@ -17,7 +17,9 @@ interface PerfumeModalProps {
 const PerfumeModal = ({ perfume, isOpen, onClose, onAddToCart }: PerfumeModalProps) => {
   const [isLiked, setIsLiked] = useState(false)
   const [quantity, setQuantity] = useState(1)
-  // Eliminar Toast, si quieres notificación usa SimpleToast
+  const [showToast, setShowToast] = useState(false)
+  const [toastMessage, setToastMessage] = useState("");
+  const toastTimeout = useRef<NodeJS.Timeout | null>(null)
   const { dispatch } = useCart()
 
   if (!isOpen || !perfume) return null
@@ -26,8 +28,10 @@ const PerfumeModal = ({ perfume, isOpen, onClose, onAddToCart }: PerfumeModalPro
     for (let i = 0; i < quantity; i++) {
       onAddToCart(perfume)
     }
-    // Aquí podrías usar setToast de Catalog si quieres notificación global
-    onClose()
+    setToastMessage("Agregado al carrito");
+    setShowToast(true);
+    if (toastTimeout.current) clearTimeout(toastTimeout.current);
+    toastTimeout.current = setTimeout(() => setShowToast(false), 2000);
   }
 
   const handleBuy = () => {
@@ -107,11 +111,19 @@ const PerfumeModal = ({ perfume, isOpen, onClose, onAddToCart }: PerfumeModalPro
               }}
             />
             {/* Stock Badge */}
-            {perfume.quantity && perfume.quantity < 5 && (
-              <div className="absolute top-4 left-4 px-3 py-1 bg-red-500/80 backdrop-blur-sm rounded-full text-white text-xs font-medium">
+            {perfume.quantity && perfume.quantity <= 2 && (
+              <div className="absolute top-4 left-4 px-3 py-1 bg-red-500/80 backdrop-blur-sm rounded-full text-white text-xs font-bold">
                 ¡Últimas unidades!
               </div>
             )}
+      {/* Toast notification in modal */}
+      {showToast && (
+        <div className="fixed z-50" style={{ top: '32px', right: '32px' }}>
+          <div className="bg-amber-300 text-black font-bold px-6 py-3 rounded-xl shadow-lg cursor-pointer transition-all duration-300 hover:bg-amber-400" style={{ minWidth: 180, textAlign: 'center' }}>
+            Agregado al carrito
+          </div>
+        </div>
+      )}
           </div>
         </div>
         {/* Content */}
@@ -142,15 +154,21 @@ const PerfumeModal = ({ perfume, isOpen, onClose, onAddToCart }: PerfumeModalPro
               Stock: {perfume.quantity || 0}
             </p>
           </div>
-          <div className="flex gap-2">
-            <Button
-              className="flex-1 bg-[#23232a] text-white font-bold hover:bg-amber-400 hover:text-black transition-colors duration-200 cursor-pointer"
-              onClick={handleAddToCart}
-            >
-              <ShoppingCart className="h-4 w-4 mr-2" />
-              Agregar al carrito
-            </Button>
-           
+          <div className="flex gap-2 relative">
+            <div className="relative w-full">
+              <Button
+                className="w-full bg-[#23232a] text-white font-bold hover:bg-amber-400 hover:text-black transition-colors duration-200 cursor-pointer"
+                onClick={handleAddToCart}
+              >
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                Agregar al carrito
+              </Button>
+              {showToast && (
+                <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#23232a] text-amber-400 px-3 py-1 rounded-xl shadow-lg text-xs font-bold z-20 transition-all duration-300 border border-amber-400">
+                  Agregado
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
