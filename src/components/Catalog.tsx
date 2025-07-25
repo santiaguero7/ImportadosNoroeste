@@ -152,9 +152,9 @@ const Catalog: React.FC<CatalogProps> = ({
             }}
           >
             <div
-              className="bg-[#0d101a] border border-[#23232a] rounded-xl max-w-md w-full"
-              style={{ maxHeight: 'calc(100vh - 48px)', overflow: 'visible' }}
+              className="bg-[#0d101a] border border-[#23232a] rounded-xl shadow-2xl w-[340px] max-h-[80vh] overflow-y-auto custom-scroll"
               onClick={e => e.stopPropagation()}
+              style={{ scrollbarWidth: 'thin', scrollbarColor: '#23232a #0d101a' }}
             >
               <FilterSidebar
                 filters={filters}

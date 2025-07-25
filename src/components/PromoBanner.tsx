@@ -6,7 +6,7 @@ const features = [
   {
     icon: Truck,
     title: "Envío Gratis",
-    description: "En compras superiores a $50.000"
+    description: "En compras superiores a $100.000"
   },
   {
     icon: Shield,
